@@ -1,34 +1,25 @@
 // Import necessary modules
 const express = require('express');
-const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const cors = require('cors');
-require('dotenv').config();
+const connectDB = require('./config/db'); // Import the connectDB function
 const userRoutes = require('./routes/userRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 
-// Initialize the app
+// Load environment variables from the .env file
+dotenv.config();
+
+// Initialize the Express app
 const app = express();
 
-// Middleware
+// Middleware setup
 app.use(express.json()); // Parse incoming JSON requests
-app.use(cors()); // Allow cross-origin requests
+app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS)
 
-// Connect to MongoDB
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('MongoDB connected...');
-    } catch (err) {
-        console.error('Database connection error:', err.message);
-        process.exit(1);
-    }
-};
+// Connect to MongoDB using the imported connectDB function
 connectDB();
 
-// Routes
+// Define routes for users and transactions
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
 
