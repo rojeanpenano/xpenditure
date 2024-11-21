@@ -5,6 +5,7 @@ const cors = require('cors');
 const connectDB = require('./config/db'); // MongoDB connection function
 const userRoutes = require('./routes/userRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const budgetRoutes = require('./routes/budgetRoutes'); // Import budget routes
 
 // Load environment variables from the .env file
 dotenv.config();
@@ -19,9 +20,10 @@ app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS)
 // Connect to MongoDB
 connectDB();
 
-// Define routes for users and transactions
+// Define routes for users, transactions, and budgets
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/budgets', budgetRoutes); // New budget routes
 
 // Start the server
 const PORT = process.env.PORT || 5000;
