@@ -4,10 +4,10 @@ const mongoose = require('mongoose');
 // Define the Transaction schema
 const TransactionSchema = new mongoose.Schema(
     {
-        userId: { 
-            type: mongoose.Schema.Types.ObjectId, // User ID must be a valid ObjectId
+        userId: {
+            type: mongoose.Schema.Types.ObjectId, // Must be a valid MongoDB ObjectId
             ref: 'User', // Reference to the User model
-            required: true 
+            required: true,
         },
         amount: { type: Number, required: true },
         category: { type: String, required: true },

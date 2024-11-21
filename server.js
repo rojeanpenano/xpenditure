@@ -2,7 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/db'); // Import the connectDB function
+const connectDB = require('./config/db'); // MongoDB connection function
 const userRoutes = require('./routes/userRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 
@@ -13,10 +13,10 @@ dotenv.config();
 const app = express();
 
 // Middleware setup
-app.use(express.json()); // Parse incoming JSON requests
+app.use(express.json()); // Parse JSON payloads
 app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS)
 
-// Connect to MongoDB using the imported connectDB function
+// Connect to MongoDB
 connectDB();
 
 // Define routes for users and transactions
