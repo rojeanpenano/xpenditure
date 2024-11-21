@@ -1,13 +1,21 @@
-### **1. Key Features of XPENDITURE**
-#### From Chapter 1: Project Context, Purpose, and Features
+# XPENDITURE Backend
+
+XPENDITURE is a backend API designed for managing personal and shared finances. It focuses on privacy, offline functionality, and accessibility while offering features like expense tracking, shared expense management, and budgeting.
+
+---
+
+## **1. Key Features of XPENDITURE**
+
+### **From Chapter 1: Project Context, Purpose, and Features**
+
 **Planned Features:**
 - **Income and Expense Tracking** (Completed):
   - Users can record transactions (income/expense) via API.
   - Transactions are categorized and associated with a user.
 
-- **Shared Expenses** (Pending):
-  - Features to split expenses among multiple users need implementation.
-  
+- **Shared Expenses** (Completed):
+  - Features to split expenses among multiple users, with settlement calculations using a divide-and-conquer algorithm.
+
 - **Personalized Budgeting** (Partially Implemented):
   - Transaction storage allows for budgeting logic in the future.
 
@@ -22,7 +30,8 @@
 
 ---
 
-#### From Chapter 1.5: Significance of the Study
+### **From Chapter 1.5: Significance of the Study**
+
 **Planned Significance to Users:**
 - **Individual Users**:
   - A tool to track income and expenses. (Completed)
@@ -33,13 +42,15 @@
 
 ---
 
-#### From Chapter 1.6: Scope and Delimitations
+### **From Chapter 1.6: Scope and Delimitations**
+
 **Included Features:**
 - **Core Functionalities**:
   - Income/expense recording. (Completed)
   - Data categorization and storage. (Completed)
+  - Shared expenses with settlement logic. (Completed)
 
-**Excluded Features**:
+**Excluded Features:**
 - **Advanced AI**:
   - No ML/AI models for personalized insights yet.
 - **Complex Financial Features**:
@@ -47,7 +58,8 @@
 
 ---
 
-### **2. Implemented Features in the Backend**
+## **2. Implemented Features in the Backend**
+
 - **Backend Setup**:
   - Node.js, Express.js, and MongoDB are fully configured.
   - Environment variables used for secure MongoDB connection.
@@ -55,9 +67,14 @@
 - **Endpoints**:
   - User registration and login.
   - Add and retrieve transactions.
+  - Shared expenses and settlement calculations.
 
 - **Validation**:
   - Ensures valid user input for `userId`, `amount`, `type`, etc.
+
+- **Algorithms Implemented**:
+  - **Divide-and-Conquer**:
+    - Used for calculating shared expense settlements.
 
 - **Testing**:
   - All implemented endpoints were tested via Postman.
@@ -67,14 +84,15 @@
 
 ---
 
-### **3. Next Steps**
-1. **Shared Expenses**:
-   - Implement logic to split and track shared costs among users.
-   - Add fields in the `Transaction` schema to accommodate group splits (e.g., `sharedWith` array).
+## **3. Next Steps**
 
-2. **Budget Tracking**:
+1. **Budget Tracking**:
    - Design APIs for users to set and monitor budgets.
-   - Use algorithms (e.g., dynamic programming or greedy techniques) to calculate budget optimization.
+   - Use algorithms (e.g., dynamic programming) to calculate budget optimization.
+
+2. **Transaction Categorization**:
+   - Implement logic to categorize transactions dynamically.
+   - Use a greedy algorithm for prioritizing categories.
 
 3. **Export to Excel**:
    - Add an endpoint to generate downloadable Excel reports for transactions.
@@ -87,4 +105,4 @@
    - Explore options to sync MongoDB changes for offline-first use cases.
 
 6. **Future AI Integration**:
-   - Implement algorithms for financial insights (divide-and-conquer or dynamic programming for predictions).
+   - Implement algorithms for financial insights (dynamic programming or machine learning for predictions).
