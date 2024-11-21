@@ -12,6 +12,13 @@ const TransactionSchema = new mongoose.Schema(
         amount: { type: Number, required: true },
         category: { type: String, required: true },
         type: { type: String, enum: ['income', 'expense'], required: true },
+        sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // List of user IDs for shared expenses
+        settlements: [
+            {
+                payer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+                amount: { type: Number },
+            },
+        ],
         date: { type: Date, default: Date.now },
     },
     { timestamps: true } // Automatically adds createdAt and updatedAt fields
