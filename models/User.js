@@ -1,3 +1,4 @@
+// models/User.js
 // Import mongoose to define the schema
 const mongoose = require('mongoose');
 
