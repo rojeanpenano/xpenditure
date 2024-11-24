@@ -12,3 +12,21 @@
 2024-11-24T11:50:05.680Z [info]: Connected to MongoDB
 2024-11-24T11:58:20.459Z [info]: POST /api/transactions
 2024-11-24T11:58:20.518Z [info]: Connected to MongoDB
+2024-11-24T12:16:54.645Z [info]: Server running on port 5000
+2024-11-24T12:16:54.702Z [info]: Connected to MongoDB
+2024-11-24T12:17:59.508Z [info]: POST /api/users/forgot-password
+2024-11-24T12:18:16.061Z [info]: POST /api/users/login
+2024-11-24T12:18:25.223Z [info]: POST /api/users/forgot-password
+2024-11-24T12:18:43.208Z [info]: POST /api/users/forgot-password
+2024-11-24T12:19:18.939Z [info]: POST /api/users/register
+2024-11-24T12:19:28.583Z [info]: POST /api/users/forgot-password
+2024-11-24T12:20:40.432Z [info]: Server running on port 5000
+2024-11-24T12:20:40.464Z [info]: Connected to MongoDB
+2024-11-24T12:20:45.068Z [info]: POST /api/users/forgot-password
+2024-11-24T12:20:49.254Z [info]: POST /api/users/forgot-password
+2024-11-24T12:21:23.415Z [info]: POST /api/users/forgot-password
+2024-11-24T12:21:42.872Z [info]: Server running on port 5000
+2024-11-24T12:21:42.900Z [info]: Connected to MongoDB
+2024-11-24T12:21:51.037Z [info]: POST /api/users/forgot-password
+2024-11-24T12:22:40.917Z [info]: POST /api/users/forgot-password
+2024-11-24T12:23:10.914Z [info]: POST /api/users/forgot-password
