@@ -3,6 +3,7 @@ const {
     addTransaction,
     getTransactions,
     categorizeTransactions,
+    monthlySummary,
 } = require('../controllers/transactionController');
 
 const router = express.Router();
@@ -15,5 +16,8 @@ router.get('/:userId', getTransactions);
 
 // Categorize transactions
 router.post('/categorize', categorizeTransactions);
+
+// Get monthly spending summary
+router.get('/summary/:userId/:year/:month', monthlySummary);
 
 module.exports = router;

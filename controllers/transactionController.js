@@ -1,4 +1,6 @@
-const Transaction = require('../models/Transaction');
+// File: controllers/transactionController.js
+
+const Transaction = require('../models/Transaction'); // Import the Transaction model
 
 // Add a new transaction
 const addTransaction = async (req, res) => {
@@ -37,7 +39,7 @@ const getTransactions = async (req, res) => {
     }
 };
 
-// Categorize transactions using a greedy algorithm
+// Categorize transactions
 const categorizeTransactions = async (req, res) => {
     try {
         const { transactions } = req.body;
@@ -61,7 +63,7 @@ const categorizeTransactions = async (req, res) => {
             for (const keyword in categoryMapping) {
                 if (transaction.description?.toLowerCase().includes(keyword)) {
                     suggestedCategory = categoryMapping[keyword];
-                    break; // Stop once the best match is found
+                    break;
                 }
             }
 
@@ -74,4 +76,43 @@ const categorizeTransactions = async (req, res) => {
     }
 };
 
-module.exports = { addTransaction, getTransactions, categorizeTransactions };
+// Calculate monthly spending summary using a Greedy Algorithm
+const monthlySummary = async (req, res) => {
+    try {
+        const { userId, year, month } = req.params;
+
+        // Validate inputs
+        if (!userId || !year || !month) {
+            return res.status(400).json({ message: 'User ID, year, and month are required' });
+        }
+
+        // Fetch transactions for the given user, year, and month
+        const transactions = await Transaction.find({
+            userId,
+            date: {
+                $gte: new Date(`${year}-${month}-01`),
+                $lt: new Date(`${year}-${month}-31`),
+            },
+        });
+
+        if (transactions.length === 0) {
+            return res.status(404).json({ message: 'No transactions found for the specified period' });
+        }
+
+        // Greedy Algorithm to group by categories and sum amounts
+        const summary = transactions.reduce((acc, transaction) => {
+            const category = transaction.category;
+            if (!acc[category]) {
+                acc[category] = 0;
+            }
+            acc[category] += transaction.amount;
+            return acc;
+        }, {});
+
+        res.status(200).json({ message: 'Monthly summary calculated', summary });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { addTransaction, getTransactions, categorizeTransactions, monthlySummary };
