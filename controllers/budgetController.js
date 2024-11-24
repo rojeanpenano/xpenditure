@@ -1,89 +1,68 @@
-const Budget = require('../models/Budget'); // Import the Budget model
-const mongoose = require('mongoose'); // Import mongoose for ObjectId validation
+const Budget = require('../models/Budget');
 
-// Set a Budget
+// Set or update a budget
 const setBudget = async (req, res) => {
     try {
-        // Extract userId from the URL or request body
-        const userId = req.params.userId || req.body.userId;
-        const { amount, categories } = req.body;
+        const { userId, amount, categories } = req.body;
 
-        // Validate userId
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: 'Invalid userId' });
+        if (!userId || !amount || !categories) {
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Create or update the budget for the user
         const budget = await Budget.findOneAndUpdate(
             { userId },
-            { userId, amount, categories },
-            { new: true, upsert: true } // Upsert creates a new entry if none exists
+            { amount, categories },
+            { new: true, upsert: true } // Create if not found
         );
 
         res.status(201).json({ message: 'Budget set successfully', budget });
     } catch (error) {
-        // Handle errors that occur during the process
         res.status(500).json({ message: error.message });
     }
 };
 
-// View Budget Details
+// Get a user's budget
 const viewBudget = async (req, res) => {
     try {
-        // Extract userId from the URL parameters
         const { userId } = req.params;
 
-        // Validate userId
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
-            return res.status(400).json({ message: 'Invalid userId' });
-        }
-
-        // Find the budget associated with the userId
         const budget = await Budget.findOne({ userId });
+        if (!budget) return res.status(404).json({ message: 'Budget not found' });
 
-        // If no budget exists, return an error
-        if (!budget) {
-            return res.status(404).json({ message: 'No budget found for this user' });
-        }
-
-        res.json(budget); // Respond with the retrieved budget
+        res.json(budget);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// Optimize Budget (Dynamic Programming)
+// Optimize budget using dynamic programming
 const optimizeBudget = async (req, res) => {
     try {
-        // Extract budgetLimit and transactions from the request body
         const { budgetLimit, transactions } = req.body;
 
-        // Validate input
-        if (!budgetLimit || !Array.isArray(transactions)) {
-            return res
-                .status(400)
-                .json({ message: 'Invalid input: budgetLimit and transactions are required' });
+        if (!budgetLimit || !transactions || !Array.isArray(transactions)) {
+            return res.status(400).json({ message: 'Invalid input' });
         }
 
-        // Dynamic Programming: Subset Sum Optimization
-        const dp = Array(budgetLimit + 1).fill(0); // Initialize DP array
+        const dp = Array(transactions.length + 1).fill(0).map(() => Array(budgetLimit + 1).fill(0));
 
-        // Fill the DP array based on transaction amounts
-        for (const transaction of transactions) {
-            for (let j = budgetLimit; j >= transaction.amount; j--) {
-                dp[j] = Math.max(dp[j], dp[j - transaction.amount] + transaction.amount);
+        for (let i = 1; i <= transactions.length; i++) {
+            for (let w = 1; w <= budgetLimit; w++) {
+                if (transactions[i - 1].amount <= w) {
+                    dp[i][w] = Math.max(
+                        transactions[i - 1].amount + dp[i - 1][w - transactions[i - 1].amount],
+                        dp[i - 1][w]
+                    );
+                } else {
+                    dp[i][w] = dp[i - 1][w];
+                }
             }
         }
 
-        // Respond with the maximum optimized budget usage
-        res.json({
-            message: 'Optimized budget usage calculated',
-            optimizedUsage: dp[budgetLimit],
-        });
+        res.json({ message: 'Budget optimized', optimizedUsage: dp[transactions.length][budgetLimit] });
     } catch (error) {
-        // Handle errors that occur during the process
         res.status(500).json({ message: error.message });
     }
 };
 
-module.exports = { setBudget, viewBudget, optimizeBudget }; // Export all functions
+module.exports = { setBudget, viewBudget, optimizeBudget };

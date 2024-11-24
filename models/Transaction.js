@@ -1,28 +1,20 @@
-// Import mongoose to define the schema
 const mongoose = require('mongoose');
 
 // Define the Transaction schema
 const TransactionSchema = new mongoose.Schema(
     {
         userId: {
-            type: mongoose.Schema.Types.ObjectId, // Must be a valid MongoDB ObjectId
-            ref: 'User', // Reference to the User model
-            required: true,
+            type: mongoose.Schema.Types.ObjectId, // References a User ID
+            ref: 'User',
+            required: true, // Transaction must belong to a user
         },
-        amount: { type: Number, required: true },
-        category: { type: String, required: true },
-        type: { type: String, enum: ['income', 'expense'], required: true },
-        sharedWith: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // List of user IDs for shared expenses
-        settlements: [
-            {
-                payer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-                amount: { type: Number },
-            },
-        ],
-        date: { type: Date, default: Date.now },
+        amount: { type: Number, required: true }, // Transaction amount
+        category: { type: String, required: true }, // Transaction category
+        type: { type: String, enum: ['income', 'expense'], required: true }, // Type of transaction
+        description: { type: String }, // Additional details about the transaction
+        date: { type: Date, default: Date.now }, // Date of the transaction
     },
-    { timestamps: true } // Automatically adds createdAt and updatedAt fields
+    { timestamps: true } // Automatically add createdAt and updatedAt timestamps
 );
 
-// Export the Transaction model
 module.exports = mongoose.model('Transaction', TransactionSchema);
