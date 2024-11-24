@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: rgb(9, 53, 77); /* Background color */
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            height: 100vh; /* Full viewport height */
+        }
+        .login-container {
+            background-color: white;
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+            text-align: center;
+        }
+        .login-container h2 {
+            margin-bottom: 20px;
+            color: rgb(9, 53, 77);
+        }
+        .login-container input {
+            width: 90%; /* Input width */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-container button {
+            width: 90%;
+            padding: 10px;
+            background-color: rgb(20, 83, 116);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .login-container button:hover {
+            background-color: rgb(15, 64, 93);
+        }
+        .login-container a {
+            display: block;
+            margin-top: 10px;
+            color: rgb(9, 53, 77);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form>
+            <input type="text" placeholder="Username" required><br>
+            <input type="password" placeholder="Password" required><br>
+            <button type="submit">Log In</button>
+        </form>
+        <a href="dir1/Forgot.html">Forgot your password?</a>
+        <a href="dr1/Create.html">Create an account</a>
+    </div>
+</body>
+</html>
