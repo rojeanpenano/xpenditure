@@ -1,6 +1,6 @@
 # Xpenditure Backend
 
-Xpenditure is a comprehensive expense management application backend. It provides robust features for tracking expenses, sharing costs, and generating summaries, all powered by Node.js, Express, and MongoDB.
+Xpenditure is a comprehensive expense management application backend. It provides features for tracking expenses, sharing costs, and generating summaries, all powered by Node.js, Express, and MongoDB.
 
 ---
 
