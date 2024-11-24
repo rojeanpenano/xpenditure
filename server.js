@@ -8,6 +8,7 @@ const connectDB = require('./config/db'); // MongoDB connection function
 const userRoutes = require('./routes/userRoutes'); // User routes
 const transactionRoutes = require('./routes/transactionRoutes'); // Transaction routes
 const budgetRoutes = require('./routes/budgetRoutes'); // Budget routes
+const sharedExpenseRoutes = require('./routes/sharedExpenseRoutes'); // Shared expense routes
 
 // Load environment variables from .env file
 dotenv.config();
@@ -35,6 +36,7 @@ connectDB();
 app.use('/api/users', userRoutes); // User-related endpoints
 app.use('/api/transactions', transactionRoutes); // Transaction-related endpoints
 app.use('/api/budgets', budgetRoutes); // Budget-related endpoints
+app.use('/api/shared-expenses', sharedExpenseRoutes); // Shared expense endpoints
 
 // Global error handling middleware
 app.use((err, req, res, next) => {
