@@ -87,3 +87,5 @@
 2024-11-24T15:43:31.630Z [info]: Server running on port 5000
 2024-11-24T15:43:38.171Z [info]: Connected to MongoDB
 2024-11-24T15:44:16.082Z [info]: POST /api/users/login
+2024-11-24T15:48:29.295Z [info]: Server running on port 5000
+2024-11-24T15:48:34.031Z [info]: Connected to MongoDB
