@@ -1,164 +1,239 @@
-# XPENDITURE Backend
+# Xpenditure Backend
 
-XPENDITURE is a backend API designed for managing personal and shared finances. It focuses on privacy, offline functionality, and accessibility while offering features like expense tracking, shared expense management, and budgeting.
-
----
-
-## **1. Key Features of XPENDITURE**
-
-### **From Chapter 1: Project Context, Purpose, and Features**
-
-**Planned Features:**
-- **Income and Expense Tracking** (Completed):
-  - Users can record transactions (income/expense) via API.
-  - Transactions are categorized and associated with a user.
-
-- **Shared Expenses** (Completed):
-  - Features to split expenses among multiple users, with settlement calculations using a divide-and-conquer algorithm.
-
-- **Personalized Budgeting** (Completed):
-  - Users can set budgets, view their allocations, and optimize spending using dynamic programming.
-
-- **Data Privacy** (Completed):
-  - Local MongoDB storage is implemented; no cloud integration ensures data remains private.
-
-- **Offline Functionality** (Framework Ready):
-  - Backend design supports local storage, paving the way for offline-first features.
-
-- **Export to Excel** (Pending):
-  - No feature to export data yet.
+## **Project Overview**
+Xpenditure is a service designed to help users manage their finances efficiently. It provides features for user authentication, transaction management, budget planning, shared expense settlements, and exporting data. This backend is built using **Node.js**, **Express**, and **MongoDB**, and implements advanced algorithms for financial computations.
 
 ---
 
-## **2. Implemented Features in the Backend**
+## **Features**
+1. **User Management**:
+   - Registration and login with secure password hashing using `bcrypt`.
+   - Authentication using JSON Web Tokens (JWT).
 
-- **Backend Setup**:
-  - Node.js, Express.js, and MongoDB are fully configured.
-  - Environment variables used for secure MongoDB connection.
+2. **Transaction Management**:
+   - Add, view, and categorize transactions.
+   - Monthly spending summary using a Greedy Algorithm.
 
-- **Endpoints**:
-  - User registration and login.
-  - Add and retrieve transactions.
-  - Shared expenses and settlement calculations.
-  - Budget creation, retrieval, and optimization.
+3. **Budget Management**:
+   - Set and retrieve budgets.
+   - Budget optimization using Dynamic Programming.
 
-- **Algorithms Implemented**:
-  - **Divide-and-Conquer**:
-    - Used for calculating shared expense settlements.
-  - **Dynamic Programming**:
-    - Applied to optimize spending against a defined budget.
+4. **Shared Expense Settlements**:
+   - Divide and Conquer algorithm to calculate shared expenses between users.
 
-- **Validation**:
-  - Ensures valid user input for `userId`, `amount`, and `transactions`.
-
-- **Testing**:
-  - All implemented endpoints were tested via Postman.
+5. **Export Data**:
+   - Export transactions as an Excel file using the `exceljs` library.
 
 ---
 
-## **3. Next Steps**
+## **Implemented Algorithms**
+1. **Greedy Algorithm**: 
+   - **Transaction Categorization**: Categorizes transactions based on predefined keywords in descriptions.
+   - **Monthly Spending Summary**: Groups transactions by categories and calculates totals for a specific month.
 
-1. **Transaction Categorization**:
-   - Implement logic to categorize transactions dynamically.
-   - Use a greedy algorithm for prioritizing categories.
+2. **Dynamic Programming**: 
+   - **Budget Optimization**: Allocates resources to maximize spending within a given budget limit.
 
-2. **Export to Excel**:
-   - Add an endpoint to generate downloadable Excel reports for transactions.
-
-3. **Visual Features**:
-   - Implement APIs for generating data visualizations (e.g., cash flow charts).
-   - Consider libraries like Chart.js for the frontend.
-
-4. **Offline Functionality**:
-   - Explore options to sync MongoDB changes for offline-first use cases.
-
-5. **Future AI Integration**:
-   - Implement algorithms for financial insights (dynamic programming or machine learning for predictions).
+3. **Divide and Conquer**: 
+   - **Shared Expense Settlements**: Calculates how much each participant owes or is owed in shared expenses by splitting and merging expense data.
 
 ---
 
-## **4. API Documentation**
+## **Project Progress**
+### **Completed Features**
+- User authentication and JWT-based security.
+- Transaction management endpoints:
+  - Adding transactions.
+  - Viewing user-specific transactions.
+  - Categorizing transactions.
+  - Monthly spending summary.
+- Budget management:
+  - Setting and retrieving budgets.
+  - Optimizing budget allocation using dynamic programming.
+- Shared expense settlements using divide and conquer.
+- Exporting transaction data to Excel.
 
-### **User Endpoints**
+### **Next Plans**
+1. Enhance error handling with custom middleware.
+2. Integrate APIs for data visualization and reporting.
+3. Optimize performance for large transaction datasets.
+4. Add more advanced financial algorithms.
 
-1. **Register User**:
-   - **POST** `/api/users/register`
-   - **Body**:
+---
+
+## **Technology Stack**
+- **Backend Framework**: Node.js with Express.js.
+- **Database**: MongoDB with Mongoose.
+- **Authentication**: JSON Web Tokens (JWT) and `bcrypt` for password hashing.
+- **Excel Export**: `exceljs` library for generating Excel files.
+
+---
+
+## **How to Use**
+### **Setup**
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rojeanpenano/xpenditure.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd xpenditure-backend
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Create a `.env` file with the following variables:
+   ```plaintext
+   PORT=5000
+   MONGO_URI=<your_mongo_connection_string>
+   JWT_SECRET=<your_secret_key>
+   ```
+5. Start the server:
+   ```bash
+   npm start
+   ```
+
+---
+
+### **API Endpoints**
+#### **User Management**
+1. **Register**:
+   - `POST /api/users/register`
+   - Body:
      ```json
      {
-       "name": "John Doe",
-       "email": "john.doe@example.com",
-       "password": "password123"
+         "name": "John Doe",
+         "email": "john.doe@example.com",
+         "password": "password123"
+     }
+     ```
+2. **Login**:
+   - `POST /api/users/login`
+   - Body:
+     ```json
+     {
+         "email": "john.doe@example.com",
+         "password": "password123"
      }
      ```
 
-2. **Login User**:
-   - **POST** `/api/users/login`
-   - **Body**:
-     ```json
-     {
-       "email": "john.doe@example.com",
-       "password": "password123"
-     }
-     ```
-
----
-
-### **Transaction Endpoints**
-
+#### **Transaction Management**
 1. **Add Transaction**:
-   - **POST** `/api/transactions`
-   - **Body**:
+   - `POST /api/transactions`
+   - Body:
      ```json
      {
-       "userId": "user_id_here",
-       "amount": 200,
-       "category": "Groceries",
-       "type": "expense"
+         "userId": "<user_id>",
+         "amount": 200,
+         "category": "Groceries",
+         "type": "expense",
+         "description": "Weekly shopping"
+     }
+     ```
+2. **View Transactions**:
+   - `GET /api/transactions/:userId`
+
+3. **Monthly Spending Summary**:
+   - `GET /api/transactions/summary/:userId/:year/:month`
+
+4. **Categorize Transactions**:
+   - `POST /api/transactions/categorize`
+   - Body:
+     ```json
+     {
+         "transactions": [
+             { "description": "Bought groceries", "amount": 50 },
+             { "description": "Monthly rent payment", "amount": 500 }
+         ]
      }
      ```
 
-2. **Get Transactions**:
-   - **GET** `/api/transactions/:userId`
-
----
-
-### **Budget Endpoints**
-
+#### **Budget Management**
 1. **Set Budget**:
-   - **POST** `/api/budgets`
-   - **Body**:
+   - `POST /api/budgets`
+   - Body:
      ```json
      {
-       "userId": "user_id_here",
-       "amount": 1000,
-       "categories": [
-         { "category": "Food", "allocated": 400 },
-         { "category": "Transport", "allocated": 200 }
-       ]
+         "userId": "<user_id>",
+         "amount": 1000,
+         "categories": [
+             { "category": "Food", "allocated": 400 },
+             { "category": "Transport", "allocated": 200 }
+         ]
      }
      ```
 
 2. **View Budget**:
-   - **GET** `/api/budgets/:userId`
+   - `GET /api/budgets/:userId`
 
 3. **Optimize Budget**:
-   - **POST** `/api/budgets/optimize`
-   - **Body**:
+   - `POST /api/budgets/optimize`
+   - Body:
      ```json
      {
-       "budgetLimit": 500,
-       "transactions": [
-         { "amount": 150 },
-         { "amount": 200 },
-         { "amount": 100 }
-       ]
+         "budgetLimit": 800,
+         "expenses": [
+             { "name": "Groceries", "cost": 300 },
+             { "name": "Transport", "cost": 150 }
+         ]
      }
      ```
-   - **Response**:
+
+#### **Shared Expense Settlements**
+1. **Calculate Settlements**:
+   - `POST /api/shared-expenses/settlements`
+   - Body:
      ```json
      {
-       "message": "Optimized budget usage calculated",
-       "optimizedUsage": 450
+         "expenses": [
+             {
+                 "description": "Dinner",
+                 "amount": 100,
+                 "paidBy": { "userId": "123", "amount": 100 },
+                 "sharedAmong": [
+                     { "userId": "123", "share": 50 },
+                     { "userId": "456", "share": 50 }
+                 ]
+             }
+         ]
      }
      ```
+
+#### **Export Data**
+1. **Export Transactions**:
+   - `GET /api/export/transactions/:userId`
+
+---
+
+## **Contributing**
+1. Fork the repository.
+2. Create a feature branch:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Description of changes"
+   ```
+4. Push to your branch:
+   ```bash
+   git push origin feature-name
+   ```
+5. Create a pull request.
+
+---
+
+## **License**
+This project is licensed under the MIT License.
+
+---
+
+## **Acknowledgments**
+- [Node.js](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Express.js](https://expressjs.com/)
+- [ExcelJS](https://github.com/exceljs/exceljs)
+```
+
+-
