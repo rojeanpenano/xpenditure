@@ -1,7 +1,7 @@
 # Xpenditure Backend
 
 ## **Project Overview**
-Xpenditure is a service designed to help users manage their finances efficiently. It provides features for user authentication, transaction management, budget planning, shared expense settlements, and exporting data. This backend is built using **Node.js**, **Express**, and **MongoDB**, and implements advanced algorithms for financial computations.
+Xpenditure is a service designed to help users manage their finances efficiently. It provides features for user authentication, transaction management, budget planning, shared expense settlements, and exporting data. The backend is built using **Node.js**, **Express**, and **MongoDB**, and implements advanced algorithms for financial computations.
 
 ---
 
@@ -235,5 +235,3 @@ This project is licensed under the MIT License.
 - [Express.js](https://expressjs.com/)
 - [ExcelJS](https://github.com/exceljs/exceljs)
 ```
-
--
