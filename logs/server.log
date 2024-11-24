@@ -9,3 +9,6 @@
 2024-11-24T11:35:21.860Z [info]: POST /api/budgets/optimize
 2024-11-24T11:36:15.246Z [info]: GET /api/export/transactions/6742eec5d2ecc09b7767c042
 2024-11-24T11:36:22.756Z [info]: GET /api/transactions/summary/6742eec5d2ecc09b7767c042/2024/November
+2024-11-24T11:50:05.680Z [info]: Connected to MongoDB
+2024-11-24T11:58:20.459Z [info]: POST /api/transactions
+2024-11-24T11:58:20.518Z [info]: Connected to MongoDB

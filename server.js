@@ -52,6 +52,11 @@ app.use('/api/export', exportRoutes); // Export endpoints
 // Error handling middleware
 app.use(errorHandler);
 
-// Start the server on the specified port
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Export the app for testing
+module.exports = app;
+
+// Start the server only if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
+}
