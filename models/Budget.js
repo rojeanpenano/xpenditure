@@ -6,13 +6,13 @@ const BudgetSchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId, // References a User ID
             ref: 'User',
-            required: true, // Budget must belong to a user
+            required: true,
         },
-        amount: { type: Number, required: true }, // Total budget amount
+        amount: { type: Number, required: true }, // Total budget
         categories: [
             {
                 category: { type: String, required: true }, // Category name
-                allocated: { type: Number, required: true }, // Allocated amount for this category
+                allocated: { type: Number, required: true }, // Allocated amount
             },
         ],
     },

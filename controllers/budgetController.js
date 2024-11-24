@@ -1,14 +1,16 @@
-const Budget = require('../models/Budget');
+const Budget = require('../models/Budget'); // Budget model
 
-// Set or update a budget
+// Set or update a user's budget
 const setBudget = async (req, res) => {
     try {
         const { userId, amount, categories } = req.body;
 
+        // Validate inputs
         if (!userId || !amount || !categories) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
+        // Update the budget if it exists; otherwise, create a new one
         const budget = await Budget.findOneAndUpdate(
             { userId },
             { amount, categories },
@@ -21,15 +23,18 @@ const setBudget = async (req, res) => {
     }
 };
 
-// Get a user's budget
-const viewBudget = async (req, res) => {
+// Retrieve a user's budget
+const getBudget = async (req, res) => {
     try {
         const { userId } = req.params;
 
+        // Find the user's budget
         const budget = await Budget.findOne({ userId });
-        if (!budget) return res.status(404).json({ message: 'Budget not found' });
+        if (!budget) {
+            return res.status(404).json({ message: 'Budget not found' });
+        }
 
-        res.json(budget);
+        res.status(200).json(budget);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -38,19 +43,23 @@ const viewBudget = async (req, res) => {
 // Optimize budget using dynamic programming
 const optimizeBudget = async (req, res) => {
     try {
-        const { budgetLimit, transactions } = req.body;
+        const { budgetLimit, expenses } = req.body;
 
-        if (!budgetLimit || !transactions || !Array.isArray(transactions)) {
+        // Validate inputs
+        if (!budgetLimit || !expenses || !Array.isArray(expenses)) {
             return res.status(400).json({ message: 'Invalid input' });
         }
 
-        const dp = Array(transactions.length + 1).fill(0).map(() => Array(budgetLimit + 1).fill(0));
+        // Dynamic Programming Algorithm for Budget Optimization
+        const dp = Array(expenses.length + 1)
+            .fill(0)
+            .map(() => Array(budgetLimit + 1).fill(0));
 
-        for (let i = 1; i <= transactions.length; i++) {
+        for (let i = 1; i <= expenses.length; i++) {
             for (let w = 1; w <= budgetLimit; w++) {
-                if (transactions[i - 1].amount <= w) {
+                if (expenses[i - 1].cost <= w) {
                     dp[i][w] = Math.max(
-                        transactions[i - 1].amount + dp[i - 1][w - transactions[i - 1].amount],
+                        expenses[i - 1].cost + dp[i - 1][w - expenses[i - 1].cost],
                         dp[i - 1][w]
                     );
                 } else {
@@ -59,10 +68,13 @@ const optimizeBudget = async (req, res) => {
             }
         }
 
-        res.json({ message: 'Budget optimized', optimizedUsage: dp[transactions.length][budgetLimit] });
+        res.status(200).json({
+            message: 'Budget optimized',
+            optimizedAmount: dp[expenses.length][budgetLimit],
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-module.exports = { setBudget, viewBudget, optimizeBudget };
+module.exports = { setBudget, getBudget, optimizeBudget };
