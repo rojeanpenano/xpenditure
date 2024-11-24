@@ -75,3 +75,6 @@
 2024-11-24T12:39:54.531Z [info]: POST /api/users/register
 2024-11-24T12:39:54.639Z [info]: POST /api/users/login
 2024-11-24T12:39:54.756Z [info]: POST /api/users/login
+2024-11-24T13:07:18.739Z [info]: Server running on port 5000
+2024-11-24T13:07:18.797Z [info]: Connected to MongoDB
+2024-11-24T13:12:59.602Z [info]: POST /api/users/login
