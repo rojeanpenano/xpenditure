@@ -10,6 +10,9 @@ const transactionRoutes = require('./routes/transactionRoutes'); // Transaction 
 const budgetRoutes = require('./routes/budgetRoutes'); // Budget routes
 const sharedExpenseRoutes = require('./routes/sharedExpenseRoutes'); // Shared expense routes
 const exportRoutes = require('./routes/exportRoutes'); // Export routes
+const errorHandler = require('./middleware/errorHandler'); // Error handler
+const logger = require('./utils/logger'); // Logger
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -30,21 +33,24 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Connect to MongoDB
-connectDB();
+// Connect to the database
+connectDB().then(() => logger.info('Connected to MongoDB'));
 
-// Define routes for different modules
+// Log each request
+app.use((req, res, next) => {
+    logger.info(`${req.method} ${req.url}`);
+    next();
+});
+
+// Set up routes for different modules
 app.use('/api/users', userRoutes); // User-related endpoints
 app.use('/api/transactions', transactionRoutes); // Transaction-related endpoints
 app.use('/api/budgets', budgetRoutes); // Budget-related endpoints
 app.use('/api/shared-expenses', sharedExpenseRoutes); // Shared expense endpoints
 app.use('/api/export', exportRoutes); // Export endpoints
 
-// Global error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error stack trace for debugging
-    res.status(err.status || 500).json({ message: err.message || 'Internal Server Error' });
-});
+// Error handling middleware
+app.use(errorHandler);
 
 // Start the server on the specified port
 const PORT = process.env.PORT || 5000;

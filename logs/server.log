@@ -1,0 +1,11 @@
+2024-11-24T11:02:17.042Z [info]: Connected to MongoDB
+2024-11-24T11:31:57.345Z [info]: POST /api/users/login
+2024-11-24T11:32:39.004Z [info]: POST /api/transactions
+2024-11-24T11:32:53.712Z [info]: GET /api/transactions/6742eec5d2ecc09b7767c042
+2024-11-24T11:33:03.335Z [info]: POST /api/budgets/
+2024-11-24T11:33:52.709Z [info]: POST /api/budgets/
+2024-11-24T11:34:22.663Z [info]: GET /api/budgets/6742eec5d2ecc09b7767c042
+2024-11-24T11:34:30.451Z [info]: POST /api/budgets/optimize
+2024-11-24T11:35:21.860Z [info]: POST /api/budgets/optimize
+2024-11-24T11:36:15.246Z [info]: GET /api/export/transactions/6742eec5d2ecc09b7767c042
+2024-11-24T11:36:22.756Z [info]: GET /api/transactions/summary/6742eec5d2ecc09b7767c042/2024/November
