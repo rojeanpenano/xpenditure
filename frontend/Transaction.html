@@ -3,170 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Management</title>
     <link rel="stylesheet" href="transact.css">
-    <title>Fun Transaction Management System</title>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="Reports.html">Report</a>
-    </nav>
+    <h1>Transaction Management</h1>
 
-    <div class="container">
-        <h1>Transaction Management System</h1>
-        
-        <!-- Input Form -->
+    <!-- Section to Add a Transaction -->
+    <section id="addTransactionSection">
+        <h2>Add Transaction</h2>
         <form id="transactionForm">
-            <label for="date">Date:</label>
-            <input type="date" id="date" required>
-
-            <label for="userId">User ID:</label>
-            <input type="text" id="userId" placeholder="Enter your user ID" required>
-
+            <!-- Input for Amount -->
             <label for="amount">Amount:</label>
-            <input type="number" id="amount" placeholder="Enter amount" required>
+            <input type="number" id="amount" name="amount" required>
 
+            <!-- Dropdown for Category -->
             <label for="category">Category:</label>
-            <select id="category" required>
-                <option value="">Select a category</option>
+            <select id="category" name="category" required>
+                <option value="">--Select Category--</option>
                 <option value="Food">Food</option>
+                <option value="Rent">Rent</option>
                 <option value="Transportation">Transportation</option>
-                <option value="Entertainment">Entertainment</option>
+                <option value="Utilities">Utilities</option>
                 <option value="Others">Others</option>
             </select>
 
-            <label for="type">Type:</label>
-            <select id="type" required>
-                <option value="">Select a type</option>
-                <option value="Expense">Expense</option>
-                <option value="Income">Income</option>
-            </select>
-
-            <label for="currency">Currency:</label>
-            <select id="currency" required>
-                <option value="USD">$ USD</option>
-                <option value="EUR">€ EUR</option>
-                <option value="GBP">£ GBP</option>
-                <option value="JPY">¥ JPY</option>
-                <option value="PHP">₱ PHP</option> <!-- Peso Option -->
-            </select>
-
+            <!-- Input for Description -->
             <label for="description">Description:</label>
-            <input type="text" id="description" placeholder="Enter description" required>
+            <input type="text" id="description" name="description" required>
 
-            <button type="button" onclick="addTransaction()">Add Transaction</button>
+            <!-- Input for Date -->
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+
+            <!-- Submit Button -->
+            <button type="submit">Add Transaction</button>
         </form>
+    </section>
 
-        <!-- Shared Expenses Form -->
-        <form id="sharedExpensesForm">
-            <label for="sharedDescription">Description:</label>
-            <input type="text" id="sharedDescription" placeholder="Enter description of shared expense" required>
+    <!-- Section to View Transactions -->
+    <section id="viewTransactionsSection">
+        <h2>All Transactions</h2>
+        <button id="viewTransactionsButton">View Transactions</button>
+        <table id="transactionsTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
 
-            <label for="sharedAmount">Amount:</label>
-            <input type="number" id="sharedAmount" placeholder="Enter total amount to share" required>
-
-            <label for="paidBy">Paid by:</label>
-            <input type="text" id="paidBy" placeholder="Enter name of person who paid" required>
-
-            <label for="paidAmount">Amount Paid:</label>
-            <input type="number" id="paidAmount" placeholder="Enter the amount paid by the person" required>
-
-            <label for="participants">Participants (comma-separated):</label>
-            <input type="text" id="participants" placeholder="Enter participant names" required>
-
-            <label for="currencyShared">Currency:</label>
-            <select id="currencyShared" required>
-                <option value="USD">$ USD</option>
-                <option value="EUR">€ EUR</option>
-                <option value="GBP">£ GBP</option>
-                <option value="JPY">¥ JPY</option>
-                <option value="PHP">₱ PHP</option> <!-- Peso Option -->
-            </select>
-
-            <button type="button" onclick="addSharedExpense()">Add Shared Expense</button>
-        </form>
-
-        <!-- Output: Transaction Records -->
-        <div class="output-section">
-            <h2>Transaction Records</h2>
-            <ul id="transactionList">
-                <li>Add transaction</li>
-            </ul>
-        </div>
-
-        <!-- Output: Shared Expenses -->
-        <div class="output-section">
-            <h2>Shared Expenses</h2>
-            <ul id="sharedExpensesList">
-                <li>Add expense to be shared</li>
-            </ul>
-        </div>
-    </div>
+    <!-- Section for Summaries -->
+    <section id="summarySection">
+        <h2>Expense Summaries</h2>
+        <button id="categorizedSummaryButton">View Categorized Summary</button>
+        <button id="monthlySummaryButton">View Monthly Summary</button>
+        <div id="summaryOutput"></div>
+    </section>
 
     <script>
-        const transactionList = document.getElementById('transactionList');
-        const sharedExpensesList = document.getElementById('sharedExpensesList');
+        // Event listener for adding a transaction
+        document.getElementById('transactionForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission behavior
 
-        function addTransaction() {
-            const date = document.getElementById('date').value;
-            const userId = document.getElementById('userId').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-            const category = document.getElementById('category').value;
-            const type = document.getElementById('type').value;
-            const description = document.getElementById('description').value;
-            const currency = document.getElementById('currency').value;
+            // Collect form data
+            const amount = document.getElementById('amount').value.trim();
+            const category = document.getElementById('category').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const date = document.getElementById('date').value.trim();
 
-            if (date && userId && !isNaN(amount) && category && type && description && currency) {
-                const transactionItem = document.createElement('li');
-                transactionItem.innerHTML = `
-                    <strong>Date:</strong> ${date}<br>
-                    <strong>User ID:</strong> ${userId}<br>
-                    <strong>Amount:</strong> ${currency} ${amount.toFixed(2)}<br>
-                    <strong>Category:</strong> ${category}<br>
-                    <strong>Type:</strong> ${type}<br>
-                    <strong>Description:</strong> ${description}
-                `;
-                transactionList.appendChild(transactionItem);
-                document.getElementById('transactionForm').reset();
-            } else {
-                alert('Please fill out all fields.');
+            // Debug: Log collected data
+            console.log({ amount, category, description, date });
+
+            // Client-side validation to ensure no fields are empty
+            if (!amount || !category || !description || !date) {
+                alert('All fields are required.');
+                return; // Stop execution if validation fails
             }
-        }
 
-        function addSharedExpense() {
-            const sharedDescription = document.getElementById('sharedDescription').value;
-            const sharedAmount = parseFloat(document.getElementById('sharedAmount').value);
-            const paidBy = document.getElementById('paidBy').value;
-            const paidAmount = parseFloat(document.getElementById('paidAmount').value);
-            const participants = document.getElementById('participants').value.split(',');
-            const currencyShared = document.getElementById('currencyShared').value;
+            try {
+                const token = localStorage.getItem('token'); // Retrieve JWT token
+                const response = await fetch('http://localhost:5000/api/transactions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ amount, category, description, date }), // Send form data
+                });
 
-            // Check if all fields are filled and valid
-            if (sharedDescription && !isNaN(sharedAmount) && paidBy && !isNaN(paidAmount) && participants.length > 0) {
-                // Calculate how much the person who paid is responsible for
-                const remainingAmount = sharedAmount - paidAmount;
-                const sharePerPerson = (remainingAmount / participants.length).toFixed(2);
-
-                // Calculate share of the person who paid
-                const paidPersonShare = (paidAmount + parseFloat(sharePerPerson)).toFixed(2);
-
-                const sharedItem = document.createElement('li');
-                sharedItem.innerHTML = `
-                    <strong>Description:</strong> ${sharedDescription}<br>
-                    <strong>Total Amount:</strong> ${currencyShared} ${sharedAmount.toFixed(2)}<br>
-                    <strong>Paid By:</strong> ${paidBy}<br>
-                    <strong>Paid Amount:</strong> ${currencyShared} ${paidAmount.toFixed(2)}<br>
-                    <strong>Remaining Amount to Share:</strong> ${currencyShared} ${remainingAmount.toFixed(2)}<br>
-                    <strong>Participants:</strong> ${participants.join(', ')}<br>
-                    <strong>Share per Person (excluding paid person):</strong> ${currencyShared} ${sharePerPerson}<br>
-                `;
-                sharedExpensesList.appendChild(sharedItem);
-                document.getElementById('sharedExpensesForm').reset();
-            } else {
-                alert('Please fill out all fields.');
+                const data = await response.json();
+                if (response.ok) {
+                    alert('Transaction added successfully!');
+                    document.getElementById('transactionForm').reset(); // Clear the form
+                } else {
+                    alert(data.message || 'Failed to add transaction');
+                }
+            } catch (error) {
+                alert('Error: Unable to connect to the server.');
             }
-        }
+        });
+
+        // Event listener to view all transactions
+        document.getElementById('viewTransactionsButton').addEventListener('click', async () => {
+            try {
+                const token = localStorage.getItem('token'); // Retrieve JWT token
+                const response = await fetch('http://localhost:5000/api/transactions', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                const transactions = await response.json();
+                if (response.ok) {
+                    const tableBody = document.querySelector('#transactionsTable tbody');
+                    tableBody.innerHTML = ''; // Clear existing rows
+
+                    transactions.forEach((transaction) => {
+                        const row = `
+                            <tr>
+                                <td>${transaction.date}</td>
+                                <td>${transaction.amount}</td>
+                                <td>${transaction.category}</td>
+                                <td>${transaction.description}</td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+                } else {
+                    alert(transactions.message || 'Failed to fetch transactions');
+                }
+            } catch (error) {
+                alert('Error: Unable to connect to the server.');
+            }
+        });
+
+        // Categorized Expense Summary
+        document.getElementById('categorizedSummaryButton').addEventListener('click', async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:5000/api/transactions/categorized-summary', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                const summary = await response.json();
+                if (response.ok) {
+                    document.getElementById('summaryOutput').innerText = JSON.stringify(summary, null, 2);
+                } else {
+                    alert(summary.message || 'Failed to fetch categorized summary');
+                }
+            } catch (error) {
+                alert('Error: Unable to connect to the server.');
+            }
+        });
+
+        // Monthly Expense Summary
+        document.getElementById('monthlySummaryButton').addEventListener('click', async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:5000/api/transactions/monthly-summary', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                const summary = await response.json();
+                if (response.ok) {
+                    document.getElementById('summaryOutput').innerText = JSON.stringify(summary, null, 2);
+                } else {
+                    alert(summary.message || 'Failed to fetch monthly summary');
+                }
+            } catch (error) {
+                alert('Error: Unable to connect to the server.');
+            }
+        });
     </script>
 </body>
 </html>
