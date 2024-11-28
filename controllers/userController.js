@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt'); // Import bcrypt for password hashing and comparison
-const jwt = require('jsonwebtoken'); // Import JSON Web Token for authentication
-const User = require('../models/User'); // Import the User model
+const bcrypt = require('bcrypt'); // For hashing passwords
+const jwt = require('jsonwebtoken'); // For generating and verifying tokens
+const User = require('../models/User'); // User model for database operations
 const crypto = require('crypto'); // For generating secure tokens
 const nodemailer = require('nodemailer'); // For sending email notifications
 
@@ -9,21 +9,17 @@ const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-        // Validate required fields
         if (!name || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Check if the user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create and save the new user
         const newUser = new User({ name, email, password: hashedPassword });
         await newUser.save();
 
@@ -38,24 +34,20 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Validate required fields
         if (!email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Find the user by email
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(404).json({ message: 'User not found' }); // User doesn't exist
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Compare the password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid credentials' }); // Incorrect password
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Generate a JWT token
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });
@@ -63,79 +55,58 @@ const loginUser = async (req, res) => {
         res.status(200).json({
             message: 'Login successful',
             token,
-            userId: user._id, // Include userId in the response
+            userId: user._id,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// Request password reset
-const requestPasswordReset = async (req, res) => {
+// Retrieve user balances
+const getBalances = async (req, res) => {
     try {
-        const { email } = req.body;
+        const userId = req.user.id;
 
-        // Find the user by email
-        const user = await User.findOne({ email });
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Generate a reset token
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-        user.resetPasswordExpires = Date.now() + 10 * 60 * 1000; // Token valid for 10 minutes
-
-        await user.save();
-
-        // Send the reset token via email
-        const transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+        res.status(200).json({
+            balances: {
+                cash: user.cash,
+                card: user.card,
             },
         });
-
-        const mailOptions = {
-            to: email,
-            subject: 'Password Reset Request',
-            html: `<p>You requested a password reset. Click <a href="http://localhost:5000/reset-password/${resetToken}">here</a> to reset your password.</p>`,
-        };
-
-        await transporter.sendMail(mailOptions);
-
-        res.status(200).json({ message: 'Password reset link sent to your email' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
-// Reset password
-const resetPassword = async (req, res) => {
+// Update user balances
+const updateBalances = async (req, res) => {
     try {
-        const { token } = req.params;
-        const { password } = req.body;
+        const userId = req.user.id;
+        const { cash, card } = req.body;
 
-        // Hash the token and find the corresponding user
-        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
-        const user = await User.findOne({
-            resetPasswordToken: hashedToken,
-            resetPasswordExpires: { $gt: Date.now() },
-        });
-
+        const user = await User.findById(userId);
         if (!user) {
-            return res.status(400).json({ message: 'Invalid or expired token' });
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        // Update the user's password
-        user.password = await bcrypt.hash(password, 10);
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
+        // Update balances
+        if (cash !== undefined) user.cash = cash;
+        if (card !== undefined) user.card = card;
 
         await user.save();
 
-        res.status(200).json({ message: 'Password reset successfully' });
+        res.status(200).json({
+            message: 'Balances updated successfully',
+            balances: {
+                cash: user.cash,
+                card: user.card,
+            },
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -144,6 +115,6 @@ const resetPassword = async (req, res) => {
 module.exports = {
     registerUser,
     loginUser,
-    requestPasswordReset,
-    resetPassword,
+    getBalances,
+    updateBalances,
 };

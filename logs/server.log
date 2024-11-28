@@ -89,3 +89,29 @@
 2024-11-24T15:44:16.082Z [info]: POST /api/users/login
 2024-11-24T15:48:29.295Z [info]: Server running on port 5000
 2024-11-24T15:48:34.031Z [info]: Connected to MongoDB
+2024-11-28T11:16:08.033Z [info]: Server running on port 5000
+2024-11-28T11:16:13.946Z [info]: Connected to MongoDB
+2024-11-28T11:17:45.034Z [info]: POST /api/users/register
+2024-11-28T11:19:54.103Z [info]: POST /api/users/login
+2024-11-28T11:20:18.785Z [info]: POST /api/users/login
+2024-11-28T11:21:47.688Z [info]: POST /api/transactions
+2024-11-28T11:22:04.130Z [info]: GET /api/transactions/6742eec5d2ecc09b7767c042
+2024-11-28T11:22:23.943Z [info]: GET /api/transactions/67485159c4ce4c90a201a4f3
+2024-11-28T11:23:12.330Z [info]: POST /api/budgets/
+2024-11-28T11:23:19.732Z [info]: POST /api/budgets/
+2024-11-28T11:23:53.969Z [info]: GET /api/budgets/67485159c4ce4c90a201a4f3
+2024-11-28T11:24:32.753Z [info]: POST /api/budgets/optimize
+2024-11-28T11:27:41.398Z [info]: POST /api/users/register
+2024-11-28T11:29:37.337Z [info]: POST /api/users/login
+2024-11-28T11:30:10.084Z [info]: POST /api/shared-expenses/settlements
+2024-11-28T11:30:34.183Z [info]: GET /api/export/transactions/67485159c4ce4c90a201a4f3
+2024-11-28T11:30:45.008Z [info]: GET /api/transactions/summary/67485159c4ce4c90a201a4f3/2024/November
+2024-11-28T15:38:38.028Z [info]: Server running on port 5000
+2024-11-28T15:38:42.278Z [info]: Connected to MongoDB
+2024-11-28T15:45:03.737Z [info]: Server running on port 5000
+2024-11-28T15:45:07.756Z [info]: Connected to MongoDB
+2024-11-28T15:46:40.409Z [info]: POST /api/users/login
+2024-11-28T15:47:42.486Z [info]: GET /api/users/balances
+2024-11-28T15:49:38.696Z [info]: PUT /api/users/balances
+2024-11-28T15:50:13.318Z [info]: POST /api/users/login
+2024-11-28T15:52:15.259Z [info]: PUT /api/users/balances
