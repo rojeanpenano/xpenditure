@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
+    <title>Register</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Register</h1>
-    <form id="registrationForm">
+    <h1>User Registration</h1>
+    <form id="registerForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
         <label for="email">Email:</label>
@@ -17,42 +17,37 @@
         <input type="password" id="password" name="password" required>
         <button type="submit">Register</button>
     </form>
-    <p id="responseMessage"></p>
-    <script src="apiConfig.js"></script>
     <script>
-        // Get the registration form
-        const form = document.getElementById("registrationForm");
-
         // Handle form submission
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault(); // Prevent page reload
+        document.getElementById('registerForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
 
             // Collect form data
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
 
             try {
-                // Send registration data to the backend
-                const response = await fetch(`${BASE_URL}/api/users/register`, {
-                    method: "POST",
+                // Send a POST request to the backend API
+                const response = await fetch('http://localhost:5000/api/users/register', {
+                    method: 'POST',
                     headers: {
-                        "Content-Type": "application/json",
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name, email, password }),
+                    body: JSON.stringify({ name, email, password }), // Send form data as JSON
                 });
 
                 const data = await response.json();
 
-                // Handle backend response
+                // Check if registration was successful
                 if (response.ok) {
-                    document.getElementById("responseMessage").textContent = data.message;
+                    alert('Registration successful! Please login.');
+                    window.location.href = 'Log.html'; // Redirect to login page
                 } else {
-                    document.getElementById("responseMessage").textContent = data.message || "Registration failed.";
+                    alert(data.message || 'Registration failed');
                 }
             } catch (error) {
-                document.getElementById("responseMessage").textContent = "An error occurred. Please try again.";
-                console.error("Error:", error);
+                alert('Error: Unable to connect to the server.');
             }
         });
     </script>

@@ -1,93 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password</title>
-    <style>
-        /* General Reset */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: rgb(9, 53, 77); /* Background color */
-            display: flex;
-            justify-content: center; /* Center content horizontally */
-            align-items: center; /* Center content vertically */
-            height: 100vh; /* Full viewport height */
-        }
-
-        /* Forgot Password Container */
-        .forgot-password-container {
-            background-color: white;
-            width: 350px;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow */
-            text-align: center;
-        }
-
-        /* Heading */
-        .forgot-password-container h2 {
-            margin-bottom: 15px;
-            color: rgb(9, 53, 77);
-        }
-
-        /* Paragraph */
-        .forgot-password-container p {
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        /* Input Field */
-        .forgot-password-container input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        /* Submit Button */
-        .forgot-password-container button {
-            width: 90%;
-            padding: 10px;
-            background-color: rgb(20, 83, 116);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .forgot-password-container button:hover {
-            background-color: rgb(15, 64, 93);
-        }
-
-        /* Back to Login Link */
-        .forgot-password-container a {
-            display: block;
-            margin-top: 15px;
-            color: rgb(9, 53, 77);
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .forgot-password-container a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <title>Password Reset</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="forgot-password-container">
-        <h2>Forgot Password</h2>
-        <p>Enter your email address below, and we’ll send you a link to reset your password.</p>
-        <form>
-            <input type="email" placeholder="Enter your email" required><br>
-            <button type="submit">Send Reset Link</button>
-        </form>
-        <a href="Log.html">Back to Login</a>
-    </div>
+    <h1>Password Reset</h1>
+    <form id="resetForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Send Reset Link</button>
+    </form>
+    <script>
+        // Handle form submission
+        document.getElementById('resetForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            // Collect form data
+            const email = document.getElementById('email').value;
+
+            try {
+                // Send a POST request to the backend API
+                const response = await fetch('http://localhost:5000/api/users/request-password-reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }), // Send form data as JSON
+                });
+
+                const data = await response.json();
+
+                // Check if password reset request was successful
+                if (response.ok) {
+                    alert('Password reset link sent to your email.');
+                } else {
+                    alert(data.message || 'Password reset request failed');
+                }
+            } catch (error) {
+                alert('Error: Unable to connect to the server.');
+            }
+        });
+    </script>
 </body>
 </html>

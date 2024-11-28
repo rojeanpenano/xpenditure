@@ -115,3 +115,7 @@
 2024-11-28T15:49:38.696Z [info]: PUT /api/users/balances
 2024-11-28T15:50:13.318Z [info]: POST /api/users/login
 2024-11-28T15:52:15.259Z [info]: PUT /api/users/balances
+2024-11-28T20:51:26.809Z [info]: Server running on port 5000
+2024-11-28T20:51:31.197Z [info]: Connected to MongoDB
+2024-11-28T20:52:52.300Z [info]: Server running on port 5000
+2024-11-28T20:52:55.928Z [info]: Connected to MongoDB

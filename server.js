@@ -22,14 +22,7 @@ const app = express();
 
 // Middleware setup
 app.use(express.json()); // Parse JSON payloads
-const cors = require("cors");
-
-// Allow requests from the frontend
-app.use(cors({
-    origin: "http://127.0.0.1:5500",
-    methods: ["GET", "POST", "PUT", "DELETE"]
-}));
-
+app.use(cors()); // Enable CORS for all routes
 app.use(helmet()); // Add security headers
 
 // Apply rate limiting to all routes to prevent abuse
