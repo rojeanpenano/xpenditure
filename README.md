@@ -153,7 +153,7 @@ Xpenditure is a comprehensive expense management application backend. It provide
 - Add role-based access control (e.g., admin).
 - Enhance analytics with daily/weekly tracking.
 - Integrate with frontend (HTML/React).
-=======
+
 - **View Transactions**: `GET /api/transactions`
   - Response:
     ```json
