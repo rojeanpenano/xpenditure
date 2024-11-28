@@ -1,0 +1,144 @@
+/* General Reset */
+body {
+    background: linear-gradient(135deg, #83a4d4, #b6fbff);
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    color: rgb(20, 50, 70);
+}
+
+/* Navigation Bar */
+nav {
+    display: flex;
+    align-items: center;
+    background-color: #2e8bc0;
+    padding: 15px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    margin-right: 20px;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #ffe156;
+}
+
+/* Main Container */
+.container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1, h2 {
+    color: #2e8bc0;
+    text-align: center;
+}
+
+/* Form Section */
+form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+form input, form select, form button {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid rgb(200, 200, 200);
+    border-radius: 5px;
+}
+
+form button {
+    background-color: #2e8bc0;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+}
+
+form button:hover {
+    background-color: #155e75;
+    transform: scale(1.05);
+}
+
+/* Currency Dropdown */
+form select {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgb(200, 200, 200);
+}
+
+/* Output Sections */
+.output-section {
+    margin-top: 30px;
+}
+
+.output-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.output-section li {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.output-section li strong {
+    display: inline-block;
+    width: 200px;
+}
+
+/* Shared Expenses Header */
+#sharedExpensesForm {
+    background-color: #f0f8ff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+#sharedExpensesForm h2 {
+    color: #2e8bc0;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Shared Expenses Field Styles */
+form input[type="text"], form input[type="number"] {
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgb(200, 200, 200);
+}
+
+/* Output: Shared Expenses List */
+.output-section li {
+    background-color: #f2f8ff;
+    border-left: 5px solid #2e8bc0;
+}
+

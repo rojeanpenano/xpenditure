@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Management Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(240, 245, 250);
+            color: rgb(20, 50, 70);
+        }
+
+        header {
+            background-color: rgb(20, 83, 116);
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .section {
+            background-color: white;
+            border: 1px solid rgb(200, 200, 200);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            margin-top: 0;
+        }
+
+        .display-area {
+            background-color: rgb(245, 250, 255);
+            border: 1px solid rgb(200, 200, 200);
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .display-area p {
+            margin: 5px 0;
+        }
+
+        .note {
+            font-size: 14px;
+            color: rgb(100, 100, 100);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Display Submitted Data</h1>
+    </header>
+
+    <div class="container">
+        <!-- Add Transaction Section -->
+        <div class="section" id="addTransaction">
+            <h2>Submitted Transaction</h2>
+            <div class="display-area">
+                <p><strong>User ID:</strong> <span id="transactionUserId">N/A</span></p>
+                <p><strong>Amount:</strong> <span id="transactionAmount">N/A</span></p>
+                <p><strong>Category:</strong> <span id="transactionCategory">N/A</span></p>
+                <p><strong>Type:</strong> <span id="transactionType">N/A</span></p>
+                <p><strong>Description:</strong> <span id="transactionDescription">N/A</span></p>
+            </div>
+        </div>
+
+        <!-- Budget Section -->
+        <div class="section" id="budgetSection">
+            <h2>Submitted Budget</h2>
+            <div class="display-area">
+                <p><strong>User ID:</strong> <span id="budgetUserId">N/A</span></p>
+                <p><strong>Total Budget:</strong> <span id="budgetAmount">N/A</span></p>
+                <p><strong>Categories:</strong> <span id="budgetCategories">N/A</span></p>
+            </div>
+        </div>
+
+        <!-- Shared Expense Settlements Section -->
+        <div class="section" id="sharedExpenses">
+            <h2>Submitted Shared Expenses</h2>
+            <div class="display-area">
+                <pre id="sharedExpenseDetails" class="note">No shared expenses submitted yet.</pre>
+            </div>
+        </div>
+
+        <!-- Export Data Section -->
+        <div class="section" id="exportData">
+            <h2>Export Request</h2>
+            <div class="display-area">
+                <p><strong>User ID:</strong> <span id="exportUserId">N/A</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock Data: Replace these with actual input values or fetch from API
+        const transactionData = {
+            userId: "user123",
+            amount: 200,
+            category: "Groceries",
+            type: "expense",
+            description: "Weekly shopping",
+        };
+
+        const budgetData = {
+            userId: "user123",
+            amount: 1000,
+            categories: "Food:400, Transport:200",
+        };
+
+        const sharedExpenseData = [
+            {
+                description: "Dinner",
+                amount: 100,
+                paidBy: { userId: "123", amount: 100 },
+                sharedAmong: [
+                    { userId: "123", share: 50 },
+                    { userId: "456", share: 50 },
+                ],
+            },
+        ];
+
+        const exportData = {
+            userId: "user123",
+        };
+
+        // Display Transaction Data
+        document.getElementById("transactionUserId").textContent = transactionData.userId;
+        document.getElementById("transactionAmount").textContent = transactionData.amount;
+        document.getElementById("transactionCategory").textContent = transactionData.category;
+        document.getElementById("transactionType").textContent = transactionData.type;
+        document.getElementById("transactionDescription").textContent = transactionData.description;
+
+        // Display Budget Data
+        document.getElementById("budgetUserId").textContent = budgetData.userId;
+        document.getElementById("budgetAmount").textContent = budgetData.amount;
+        document.getElementById("budgetCategories").textContent = budgetData.categories;
+
+        // Display Shared Expenses
+        document.getElementById("sharedExpenseDetails").textContent = JSON.stringify(
+            sharedExpenseData,
+            null,
+            2
+        );
+
+        // Display Export Data
+        document.getElementById("exportUserId").textContent = exportData.userId;
+    </script>
+</body>
+</html>

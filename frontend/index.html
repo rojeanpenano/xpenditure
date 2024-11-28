@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Homepage.css">
+    <title>Welcome to Xpenditure</title>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <a href="index.html" class="brand">XPENDITURE</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="Contact.html">Contact Us</a>
+                <a href="Log.html">Log In</a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle Navigation">☰</button>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Welcome to Xpenditure</h1>
+        <div class="typewriter">Your personal finance tracker made easy and interactive!</div>
+        <a href="Transaction.html" class="btn">Track your expenses now!</a>
+    </div>
+
+    <section class="data-protection">
+        <h2>Your Data is Safe with Us</h2>
+        <p>We take your privacy seriously. With state-of-the-art encryption, your financial data is protected at all times.</p>
+        <div class="shield-animation">
+            <div class="shield"></div>
+            <div class="lock"></div>
+        </div>
+        <p>Your personal information is never shared with third parties without your consent. We're committed to your security.</p>
+    </section>
+
+    <!-- Why Choose Xpenditure -->
+    <section>
+        <h2>Why Choose Xpenditure?</h2>
+        <p>Manage your money effortlessly with tools to track spending, create budgets, and set financial goals.</p>
+        <div class="features">
+            <div class="feature-card">
+                <img src="https://img.icons8.com/ios-filled/100/money.png" alt="Track Spending">
+                <h3>Track Spending</h3>
+                <p>Keep an eye on every expense with detailed logs and insights.</p>
+            </div>
+            <div class="feature-card">
+                <img src="https://img.icons8.com/ios-filled/100/budget.png" alt="Budget Creation">
+                <h3>Create Budgets</h3>
+                <p>Set monthly limits and achieve your financial targets with ease.</p>
+            </div>
+            <div class="feature-card">
+                <img src="https://img.icons8.com/ios-filled/100/future.png" alt="Financial Goals">
+                <h3>Set Goals</h3>
+                <p>Define your goals and watch your progress soar.</p>
+            </div>
+        </div>
+    </section>
+
+      <!-- Free Money Tracking App Section -->
+<section class="free-app">
+    <h2>Xpenditure is Free for Everyone!</h2>
+    <p>Whether you're managing a budget, tracking daily expenses, or saving for a goal, Xpenditure is here to help – absolutely free!</p>
+    <div class="money-animation">
+        <div class="coin"></div>
+        <div class="dollar-sign">$</div>
+    </div>
+    <p>No hidden fees. No subscriptions. Just a simple, powerful tool to help you track your spending and achieve financial freedom.</p>
+</section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Xpenditure. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        });
+
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => observer.observe(section));
+
+        // Intersection Observer for Data Protection Section
+        const dataProtectionSection = document.querySelector('.data-protection');
+
+         n3566oobserver.observe(dataProtectionSection);
+
+        // Intersection Observer for Free App Section
+        const freeAppSection = document.querySelector('.free-app');
+
+        observer.observe(freeAppSection);
+    </script>
+</body>
+</html>

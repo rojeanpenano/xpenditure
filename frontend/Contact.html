@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="ContactPage.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <a href="index.html" class="brand">XPENDITURE</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="Contact.html">Contact Us</a>
+                <a href="Log.html">Log In</a>
+            </div>
+            <button class="nav-toggle" aria-label="Toggle Navigation">☰</button>
+        </nav>
+    </header>
+
+    <!-- Contact Us Section -->
+    <div class="container">
+        <h2>Call us (or) Send us an Email</h2>
+        <p>We’re here to help! Reach out to any of our team members below:</p>
+
+        <!-- Rojean's Contact Card -->
+        <div class="contact-card">
+            <img src="Rojean.png" alt="Rojean's Photo">
+            <div>
+                <h3>Rojean Peñano</h3>
+                <p>📞 +6394 5765 5760</p>
+                <p>✉️ <a href="mailto:rojeanpenano@gmail.com">rojeanpenano@gmail.com</a></p>
+            </div>
+        </div>
+
+        <!-- Khrystel's Contact Card -->
+        <div class="contact-card">
+            <img src="Khrystel.png" alt="Khrystel's Photo">
+            <div>
+                <h3>Guisihan Khrystel Ann</h3>
+                <p>📞 +6396 1826 7643</p>
+                <p>✉️ <a href="mailto:guisihankhrystelann@gmail.com">guisihankhrystelann@gmail.com</a></p>
+            </div>
+        </div>
+
+        <!-- Daniel's Contact Card -->
+        <div class="contact-card">
+            <img src="Daniel.png" alt="Daniel's Photo">
+            <div>
+                <h3>Daniel Planada</h3>
+                <p>📞 +6391 0418 9194</p>
+                <p>✉️ <a href="mailto:danielplanada228@gmail.com">danielplanada228@gmail.com</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Xpenditure Team. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

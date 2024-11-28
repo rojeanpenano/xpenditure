@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="transact.css">
+    <title>Reports - Transaction Management System</title>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="Transaction.html">Transactions</a>
+    </nav>
+
+    <div class="container">
+        <h1>Transaction Reports</h1>
+        
+        <!-- Filter By Month or Year -->
+        <div class="filter-section">
+            <label for="filterType">Select Time Period:</label>
+            <select id="filterType">
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+
+            <label for="selectDate">Select Date:</label>
+            <input type="month" id="selectDate">
+
+            <button type="button" onclick="generateReport()">Generate Report</button>
+        </div>
+
+        <!-- Output: Summary -->
+        <div class="summary">
+            <h2>Summary</h2>
+            <div id="totalIncome">Total Income: $0.00</div>
+            <div id="totalExpense">Total Expense: $0.00</div>
+        </div>
+
+        <!-- Output: Detailed Transaction Records -->
+        <div class="output-section">
+            <h2>Transaction Records</h2>
+            <ul id="reportList">
+                <li>Select a time period and click "Generate Report"</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function generateReport() {
+            const filterType = document.getElementById('filterType').value;
+            const selectedDate = document.getElementById('selectDate').value;
+            
+            if (!selectedDate) {
+                alert('Please select a date.');
+                return;
+            }
+
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            const filteredTransactions = filterTransactions(transactions, filterType, selectedDate);
+            
+            // Calculate total income and expense
+            let totalIncome = 0;
+            let totalExpense = 0;
+
+            filteredTransactions.forEach(transaction => {
+                if (transaction.type === 'Income') {
+                    totalIncome += transaction.amount;
+                } else if (transaction.type === 'Expense') {
+                    totalExpense += transaction.amount;
+                }
+            });
+
+            document.getElementById('totalIncome').textContent = `Total Income: $${totalIncome.toFixed(2)}`;
+            document.getElementById('totalExpense').textContent = `Total Expense: $${totalExpense.toFixed(2)}`;
+
+            // Display the filtered transactions
+            const reportList = document.getElementById('reportList');
+            reportList.innerHTML = ''; // Clear previous list
+
+            filteredTransactions.forEach(transaction => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>Date:</strong> ${transaction.date}<br>
+                    <strong>User ID:</strong> ${transaction.userId}<br>
+                    <strong>Amount:</strong> $${transaction.amount.toFixed(2)}<br>
+                    <strong>Category:</strong> ${transaction.category}<br>
+                    <strong>Type:</strong> ${transaction.type}<br>
+                    <strong>Description:</strong> ${transaction.description}
+                `;
+                reportList.appendChild(listItem);
+            });
+        }
+
+        function filterTransactions(transactions, filterType, selectedDate) {
+            const filtered = [];
+            const [year, month] = selectedDate.split('-');
+
+            transactions.forEach(transaction => {
+                const transactionDate = new Date(transaction.date);
+                const transactionYear = transactionDate.getFullYear();
+                const transactionMonth = (transactionDate.getMonth() + 1).toString().padStart(2, '0');
+
+                if (filterType === 'monthly' && transactionYear === parseInt(year) && transactionMonth === month) {
+                    filtered.push(transaction);
+                } else if (filterType === 'yearly' && transactionYear === parseInt(year)) {
+                    filtered.push(transaction);
+                }
+            });
+
+            return filtered;
+        }
+
+        // On page load, we can load the data if any is available
+        window.onload = function() {
+            const transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+            if (transactions.length === 0) {
+                document.getElementById('reportList').innerHTML = '<li>No transactions available.</li>';
+            }
+        };
+    </script>
+</body>
+</html>
