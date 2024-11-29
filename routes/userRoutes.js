@@ -1,23 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const {
-    registerUser,
-    loginUser,
-    getBalances,
-    updateBalances,
-} = require('../controllers/userController');
-const { protect } = require('../middleware/authMiddleware');
+const { registerUser, loginUser, getBalances, updateBalances } = require('../controllers/userController'); // Import controller functions
+const { protect } = require('../middleware/authMiddleware'); // Import the protect middleware
 
-// User registration
+// Route to register a new user
 router.post('/register', registerUser);
 
-// User login
+// Route to login a user
 router.post('/login', loginUser);
 
-// Retrieve user balances
+// Route to get user balances
 router.get('/balances', protect, getBalances);
 
-// Update user balances
+// Route to update user balances
 router.put('/balances', protect, updateBalances);
 
 module.exports = router;

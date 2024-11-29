@@ -1,36 +1,29 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const jwt = require('jsonwebtoken'); // Import JWT for token verification
+const User = require('../models/User'); // User model for user data retrieval
 
-// Middleware to protect routes
+/**
+ * Middleware to protect routes
+ */
 const protect = async (req, res, next) => {
     let token;
 
-    // Check if the Authorization header exists and starts with 'Bearer'
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
+    // Check for the token in the Authorization header
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            // Extract token from the Authorization header
-            token = req.headers.authorization.split(' ')[1];
+            token = req.headers.authorization.split(' ')[1]; // Extract the token
 
             // Verify the token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Find the user from the decoded token
+            // Attach the authenticated user's data to the request object
             req.user = await User.findById(decoded.id).select('-password');
-
-            // Proceed to the next middleware or route handler
-            next();
+            next(); // Proceed to the next middleware or route handler
         } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized' });
+            console.error('Authorization error:', error);
+            res.status(401).json({ message: 'Not authorized, token failed' });
         }
-    }
-
-    // If no token was provided
-    if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+    } else {
+        res.status(401).json({ message: 'Not authorized, no token provided' });
     }
 };
 

@@ -1,5 +1,3 @@
-// File: controllers/transactionController.js
-
 const Transaction = require('../models/Transaction'); // Import the Transaction model
 
 // Add a new transaction

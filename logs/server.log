@@ -128,3 +128,42 @@
 2024-11-28T21:04:44.910Z [info]: POST /api/users/login
 2024-11-28T21:05:45.176Z [info]: POST /api/transactions
 2024-11-28T21:06:00.807Z [info]: POST /api/transactions
+2024-11-28T21:13:22.746Z [info]: Server running on port 5000
+2024-11-28T21:13:27.330Z [info]: Connected to MongoDB
+2024-11-28T21:13:59.051Z [info]: POST /api/users/register
+2024-11-28T21:14:11.264Z [info]: POST /api/users/login
+2024-11-28T21:14:14.312Z [info]: POST /api/users/login
+2024-11-28T21:15:29.130Z [info]: POST /api/transactions
+2024-11-28T21:15:41.012Z [info]: POST /api/transactions
+2024-11-28T21:15:47.107Z [info]: POST /api/transactions
+2024-11-28T21:21:01.436Z [info]: POST /api/transactions
+2024-11-28T22:20:47.979Z [info]: Server running on port 5000
+2024-11-28T22:20:50.053Z [info]: Connected to MongoDB
+2024-11-28T22:23:32.313Z [info]: POST /api/users/register
+2024-11-28T22:23:44.444Z [info]: POST /api/users/login
+2024-11-28T22:29:56.659Z [info]: Server running on port 5000
+2024-11-28T22:29:58.869Z [info]: Connected to MongoDB
+2024-11-28T22:30:07.218Z [info]: POST /api/users/register
+2024-11-28T22:30:18.939Z [info]: POST /api/users/login
+2024-11-28T22:30:25.261Z [info]: POST /api/users/login
+2024-11-28T22:30:28.069Z [info]: POST /api/users/login
+2024-11-28T22:53:21.582Z [info]: Server running on port 5000
+2024-11-28T22:53:24.219Z [info]: Connected to MongoDB
+2024-11-28T22:53:42.034Z [info]: POST /api/users/register
+2024-11-28T22:53:57.103Z [info]: POST /api/users/login
+2024-11-28T23:06:09.015Z [info]: Server running on port 5000
+2024-11-28T23:06:12.242Z [info]: Connected to MongoDB
+2024-11-28T23:06:41.621Z [info]: POST /api/users/login
+2024-11-28T23:06:48.529Z [info]: POST /api/users/login
+2024-11-28T23:12:13.409Z [info]: Server running on port 5000
+2024-11-28T23:12:14.959Z [info]: Connected to MongoDB
+2024-11-28T23:13:45.053Z [info]: POST /api/users/register
+2024-11-29T03:11:53.672Z [info]: Server running on port 5000
+2024-11-29T03:11:56.491Z [info]: Connected to MongoDB
+2024-11-29T03:14:47.418Z [info]: Server running on port 5000
+2024-11-29T03:14:48.832Z [info]: Connected to MongoDB
+2024-11-29T03:15:48.246Z [info]: POST /api/users/register
+2024-11-29T03:38:44.764Z [info]: Server running on port 5000
+2024-11-29T03:38:47.368Z [info]: Connected to MongoDB
+2024-11-29T03:42:40.953Z [info]: Server running on port 5000
+2024-11-29T03:42:42.280Z [info]: Connected to MongoDB
