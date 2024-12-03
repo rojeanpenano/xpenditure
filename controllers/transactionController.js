@@ -1,116 +1,72 @@
 const Transaction = require('../models/Transaction'); // Import the Transaction model
 
-// Add a new transaction
+/**
+ * Add a new transaction
+ * @route POST /api/transactions
+ * @access Private
+ */
 const addTransaction = async (req, res) => {
     try {
-        const { userId, amount, category, type, description } = req.body;
+        // Extract transaction details from the request body
+        const { date, description, category, amount, type } = req.body;
 
-        // Validate the required fields
-        if (!userId || !amount || !category || !type) {
+        // Validate that all required fields are provided
+        if (!date || !description || !category || !amount || !type) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Create and save the transaction
-        const transaction = new Transaction({ userId, amount, category, type, description });
+        // Ensure the user ID is included (extracted from the token)
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: 'Unauthorized. Please log in again.' });
+        }
+
+        // Create a new transaction object
+        const transaction = new Transaction({
+            userId: req.user.id, // Attach the user ID to the transaction
+            date,
+            description,
+            category,
+            amount,
+            type,
+        });
+
+        // Save the transaction to the database
         await transaction.save();
 
-        res.status(201).json({ message: 'Transaction added successfully', transaction });
+        // Send a success response
+        res.status(201).json(transaction);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Log any server-side error and respond with a 500 status
+        console.error('Error adding transaction:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
 
-// Retrieve transactions for a user
+/**
+ * Fetch all transactions for the logged-in user
+ * @route GET /api/transactions
+ * @access Private
+ */
 const getTransactions = async (req, res) => {
     try {
-        const { userId } = req.params;
+        // Ensure the user ID is included (extracted from the token)
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ message: 'Unauthorized. Please log in again.' });
+        }
 
-        // Validate userId
-        if (!userId) return res.status(400).json({ message: 'User ID is required' });
+        // Fetch all transactions for the logged-in user
+        const transactions = await Transaction.find({ userId: req.user.id }).sort({ date: -1 });
 
-        // Retrieve transactions for the user
-        const transactions = await Transaction.find({ userId });
-
-        res.json(transactions);
+        // Send the transactions as a response
+        res.status(200).json(transactions);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Log any server-side error and respond with a 500 status
+        console.error('Error fetching transactions:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
     }
 };
 
-// Categorize transactions
-const categorizeTransactions = async (req, res) => {
-    try {
-        const { transactions } = req.body;
-
-        if (!transactions || !Array.isArray(transactions)) {
-            return res.status(400).json({ message: 'Transactions must be an array' });
-        }
-
-        // Predefined category mapping
-        const categoryMapping = {
-            groceries: 'Food',
-            rent: 'Housing',
-            gas: 'Transport',
-            electricity: 'Utilities',
-        };
-
-        // Categorize each transaction
-        const categorizedTransactions = transactions.map((transaction) => {
-            let suggestedCategory = 'Miscellaneous'; // Default category
-
-            for (const keyword in categoryMapping) {
-                if (transaction.description?.toLowerCase().includes(keyword)) {
-                    suggestedCategory = categoryMapping[keyword];
-                    break;
-                }
-            }
-
-            return { ...transaction, suggestedCategory };
-        });
-
-        res.json({ message: 'Transactions categorized successfully', categorizedTransactions });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
+module.exports = {
+    addTransaction,
+    getTransactions,
 };
-
-// Calculate monthly spending summary using a Greedy Algorithm
-const monthlySummary = async (req, res) => {
-    try {
-        const { userId, year, month } = req.params;
-
-        // Validate inputs
-        if (!userId || !year || !month) {
-            return res.status(400).json({ message: 'User ID, year, and month are required' });
-        }
-
-        // Fetch transactions for the given user, year, and month
-        const transactions = await Transaction.find({
-            userId,
-            date: {
-                $gte: new Date(`${year}-${month}-01`),
-                $lt: new Date(`${year}-${month}-31`),
-            },
-        });
-
-        if (transactions.length === 0) {
-            return res.status(404).json({ message: 'No transactions found for the specified period' });
-        }
-
-        // Greedy Algorithm to group by categories and sum amounts
-        const summary = transactions.reduce((acc, transaction) => {
-            const category = transaction.category;
-            if (!acc[category]) {
-                acc[category] = 0;
-            }
-            acc[category] += transaction.amount;
-            return acc;
-        }, {});
-
-        res.status(200).json({ message: 'Monthly summary calculated', summary });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-module.exports = { addTransaction, getTransactions, categorizeTransactions, monthlySummary };

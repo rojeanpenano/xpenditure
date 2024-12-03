@@ -1,29 +1,12 @@
 const express = require('express');
-const { body } = require('express-validator');
-const {
-    addTransaction,
-    getTransactions,
-    categorizeTransactions,
-    monthlySummary,
-} = require('../controllers/transactionController');
-
 const router = express.Router();
+const { addTransaction, getTransactions } = require('../controllers/transactionController');
+const { protect } = require('../middleware/authMiddleware'); // Protect routes with authentication
 
-// Add a new transaction with validation
-router.post(
-    '/',
-    [
-        body('userId').notEmpty().withMessage('User ID is required'),
-        body('amount').isNumeric().withMessage('Amount must be a number'),
-        body('category').notEmpty().withMessage('Category is required'),
-        body('type').isIn(['income', 'expense']).withMessage('Type must be income or expense'),
-    ],
-    addTransaction
-);
+// Route to fetch all transactions for a user
+router.get('/', protect, getTransactions);
 
-// Other routes
-router.get('/:userId', getTransactions);
-router.post('/categorize', categorizeTransactions);
-router.get('/summary/:userId/:year/:month', monthlySummary);
+// Route to add a new transaction
+router.post('/', protect, addTransaction);
 
 module.exports = router;

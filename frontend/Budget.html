@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Management</title>
+    <link rel="stylesheet" href="Homepage.css">
+</head>
+<body>
+    <header>
+        <h1>Budget Management</h1>
+    </header>
+
+    <section>
+        <h3>Current Budget Summary</h3>
+        <div id="budgetSummary">
+            <!-- Budget details will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <section>
+        <form id="budgetForm">
+            <h3>Set New Budget</h3>
+            <label for="amount">Amount</label>
+            <input type="number" id="amount" name="amount" required>
+
+            <label for="startDate">Start Date</label>
+            <input type="date" id="startDate" name="startDate" required>
+
+            <label for="endDate">End Date</label>
+            <input type="date" id="endDate" name="endDate" required>
+
+            <button type="submit">Set Budget</button>
+        </form>
+    </section>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api/budgets';
+        const token = localStorage.getItem('token'); // Retrieve JWT token
+
+        // Fetch and display the budget summary
+        async function fetchBudgetSummary() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch budget summary');
+
+                const { budget, totalExpenses, remainingBudget } = await response.json();
+
+                const budgetSummary = `
+                    <p><strong>Budget Amount:</strong> ${budget.amount}</p>
+                    <p><strong>Total Expenses:</strong> ${totalExpenses}</p>
+                    <p><strong>Remaining Budget:</strong> ${remainingBudget}</p>
+                `;
+                document.getElementById('budgetSummary').innerHTML = budgetSummary;
+            } catch (error) {
+                document.getElementById('budgetSummary').innerText = 'No budget set or an error occurred.';
+                console.error(error);
+            }
+        }
+
+        // Handle budget form submission
+        document.getElementById('budgetForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const amount = parseFloat(document.getElementById('amount').value);
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ amount, startDate, endDate }),
+                });
+
+                if (!response.ok) throw new Error('Failed to set budget');
+
+                alert('Budget set successfully!');
+                fetchBudgetSummary(); // Refresh the budget summary
+                document.getElementById('budgetForm').reset();
+            } catch (error) {
+                alert('Error setting budget: ' + error.message);
+            }
+        });
+
+        // Fetch budget summary on page load
+        window.onload = fetchBudgetSummary;
+    </script>
+</body>
+</html>

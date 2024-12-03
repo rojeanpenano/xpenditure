@@ -3,158 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaction Management Display</title>
+    <title>Transaction Management</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             background-color: rgb(240, 245, 250);
-            color: rgb(20, 50, 70);
+            padding: 20px;
         }
 
         header {
+            text-align: center;
             background-color: rgb(20, 83, 116);
             color: white;
-            text-align: center;
-            padding: 15px;
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1200px;
-            margin: 20px auto;
-        }
-
-        .section {
-            background-color: white;
-            border: 1px solid rgb(200, 200, 200);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .section h2 {
-            margin-top: 0;
-        }
-
-        .display-area {
-            background-color: rgb(245, 250, 255);
-            border: 1px solid rgb(200, 200, 200);
+            padding: 10px;
             border-radius: 5px;
-            padding: 15px;
-            margin-top: 15px;
         }
 
-        .display-area p {
-            margin: 5px 0;
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
         }
 
-        .note {
-            font-size: 14px;
-            color: rgb(100, 100, 100);
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgb(20, 83, 116);
+            color: white;
+        }
+
+        form {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input, select, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: rgb(20, 83, 116);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(17, 72, 102);
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Display Submitted Data</h1>
+        <h1>Transaction Management</h1>
     </header>
 
-    <div class="container">
-        <!-- Add Transaction Section -->
-        <div class="section" id="addTransaction">
-            <h2>Submitted Transaction</h2>
-            <div class="display-area">
-                <p><strong>User ID:</strong> <span id="transactionUserId">N/A</span></p>
-                <p><strong>Amount:</strong> <span id="transactionAmount">N/A</span></p>
-                <p><strong>Category:</strong> <span id="transactionCategory">N/A</span></p>
-                <p><strong>Type:</strong> <span id="transactionType">N/A</span></p>
-                <p><strong>Description:</strong> <span id="transactionDescription">N/A</span></p>
-            </div>
-        </div>
+    <!-- Table for displaying transactions -->
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody id="transactionTableBody">
+            <!-- Transactions will be dynamically loaded here -->
+        </tbody>
+    </table>
 
-        <!-- Budget Section -->
-        <div class="section" id="budgetSection">
-            <h2>Submitted Budget</h2>
-            <div class="display-area">
-                <p><strong>User ID:</strong> <span id="budgetUserId">N/A</span></p>
-                <p><strong>Total Budget:</strong> <span id="budgetAmount">N/A</span></p>
-                <p><strong>Categories:</strong> <span id="budgetCategories">N/A</span></p>
-            </div>
-        </div>
+    <!-- Form for adding transactions -->
+    <form id="transactionForm">
+        <h3>Add New Transaction</h3>
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required>
 
-        <!-- Shared Expense Settlements Section -->
-        <div class="section" id="sharedExpenses">
-            <h2>Submitted Shared Expenses</h2>
-            <div class="display-area">
-                <pre id="sharedExpenseDetails" class="note">No shared expenses submitted yet.</pre>
-            </div>
-        </div>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" placeholder="Enter description" required>
 
-        <!-- Export Data Section -->
-        <div class="section" id="exportData">
-            <h2>Export Request</h2>
-            <div class="display-area">
-                <p><strong>User ID:</strong> <span id="exportUserId">N/A</span></p>
-            </div>
-        </div>
-    </div>
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" placeholder="Enter category" required>
+
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+
+        <label for="type">Type</label>
+        <select id="type" name="type" required>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+        </select>
+
+        <button type="submit">Add Transaction</button>
+    </form>
 
     <script>
-        // Mock Data: Replace these with actual input values or fetch from API
-        const transactionData = {
-            userId: "user123",
-            amount: 200,
-            category: "Groceries",
-            type: "expense",
-            description: "Weekly shopping",
-        };
+        const API_URL = 'http://localhost:5000/api/transactions';
+        const token = localStorage.getItem('token'); // Retrieve JWT token
 
-        const budgetData = {
-            userId: "user123",
-            amount: 1000,
-            categories: "Food:400, Transport:200",
-        };
+        // Fetch and display transactions
+        async function fetchTransactions() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) throw new Error('Failed to fetch transactions');
 
-        const sharedExpenseData = [
-            {
-                description: "Dinner",
-                amount: 100,
-                paidBy: { userId: "123", amount: 100 },
-                sharedAmong: [
-                    { userId: "123", share: 50 },
-                    { userId: "456", share: 50 },
-                ],
-            },
-        ];
+                const transactions = await response.json();
+                const tableBody = document.getElementById('transactionTableBody');
+                tableBody.innerHTML = ''; // Clear the table
 
-        const exportData = {
-            userId: "user123",
-        };
+                transactions.forEach(transaction => {
+                    const row = `
+                        <tr>
+                            <td>${new Date(transaction.date).toLocaleDateString()}</td>
+                            <td>${transaction.description}</td>
+                            <td>${transaction.category}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.type}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row;
+                });
+            } catch (error) {
+                alert('Error fetching transactions: ' + error.message);
+            }
+        }
 
-        // Display Transaction Data
-        document.getElementById("transactionUserId").textContent = transactionData.userId;
-        document.getElementById("transactionAmount").textContent = transactionData.amount;
-        document.getElementById("transactionCategory").textContent = transactionData.category;
-        document.getElementById("transactionType").textContent = transactionData.type;
-        document.getElementById("transactionDescription").textContent = transactionData.description;
+        // Handle form submission for adding transactions
+        document.getElementById('transactionForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-        // Display Budget Data
-        document.getElementById("budgetUserId").textContent = budgetData.userId;
-        document.getElementById("budgetAmount").textContent = budgetData.amount;
-        document.getElementById("budgetCategories").textContent = budgetData.categories;
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const type = document.getElementById('type').value;
 
-        // Display Shared Expenses
-        document.getElementById("sharedExpenseDetails").textContent = JSON.stringify(
-            sharedExpenseData,
-            null,
-            2
-        );
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ date, description, category, amount, type })
+                });
+                if (!response.ok) throw new Error('Failed to add transaction');
 
-        // Display Export Data
-        document.getElementById("exportUserId").textContent = exportData.userId;
+                alert('Transaction added successfully!');
+                fetchTransactions(); // Refresh the transactions table
+                document.getElementById('transactionForm').reset();
+            } catch (error) {
+                alert('Error adding transaction: ' + error.message);
+            }
+        });
+
+        // Fetch transactions on page load
+        window.onload = fetchTransactions;
     </script>
 </body>
 </html>

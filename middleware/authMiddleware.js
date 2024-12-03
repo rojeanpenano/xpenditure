@@ -1,29 +1,28 @@
-const jwt = require('jsonwebtoken'); // Import JWT for token verification
-const User = require('../models/User'); // User model for user data retrieval
+const jwt = require('jsonwebtoken');
+const User = require('../models/User'); // Import the User model
 
-/**
- * Middleware to protect routes
- */
 const protect = async (req, res, next) => {
     let token;
 
-    // Check for the token in the Authorization header
+    // Check for the Authorization header
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
-            token = req.headers.authorization.split(' ')[1]; // Extract the token
+            // Extract the token
+            token = req.headers.authorization.split(' ')[1];
 
             // Verify the token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-            // Attach the authenticated user's data to the request object
+            // Attach the user to the request object
             req.user = await User.findById(decoded.id).select('-password');
+
             next(); // Proceed to the next middleware or route handler
         } catch (error) {
-            console.error('Authorization error:', error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            console.error('Token verification failed:', error);
+            res.status(401).json({ message: 'Not authorized. Token failed.' });
         }
     } else {
-        res.status(401).json({ message: 'Not authorized, no token provided' });
+        res.status(401).json({ message: 'Not authorized. No token provided.' });
     }
 };
 

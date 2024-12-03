@@ -1,15 +1,12 @@
 const express = require('express');
-const { setBudget, getBudget, optimizeBudget } = require('../controllers/budgetController');
-
 const router = express.Router();
+const { setBudget, getBudgetSummary } = require('../controllers/budgetController');
+const { protect } = require('../middleware/authMiddleware');
 
-// Route to set or update a budget
-router.post('/', setBudget);
+// Route to set a new budget
+router.post('/', protect, setBudget);
 
-// Route to get a user's budget
-router.get('/:userId', getBudget);
-
-// Route to optimize a budget
-router.post('/optimize', optimizeBudget);
+// Route to get budget summary
+router.get('/', protect, getBudgetSummary);
 
 module.exports = router;
