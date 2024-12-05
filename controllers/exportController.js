@@ -1,5 +1,3 @@
-// File: controllers/exportController.js
-
 const Transaction = require('../models/Transaction'); // Import the Transaction model
 const ExcelJS = require('exceljs'); // ExcelJS library for creating Excel files
 
