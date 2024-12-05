@@ -1,43 +1,36 @@
+const asyncHandler = require('express-async-handler');
 const SharedExpense = require('../models/SharedExpense');
 
-// Calculate settlements using Divide and Conquer
-const calculateSettlements = async (req, res) => {
-    try {
-        const { expenses } = req.body;
+// @desc Get all shared expenses for the logged-in user
+// @route GET /api/shared-expenses
+// @access Private
+const getSharedExpenses = asyncHandler(async (req, res) => {
+    const expenses = await SharedExpense.find({ user: req.user.id }); // Fetch expenses for the user
+    res.status(200).json(expenses);
+});
 
-        if (!expenses || !Array.isArray(expenses)) {
-            return res.status(400).json({ message: 'Expenses must be an array' });
-        }
+// @desc Add a new shared expense
+// @route POST /api/shared-expenses
+// @access Private
+const addSharedExpense = asyncHandler(async (req, res) => {
+    const { name, amount, participants } = req.body;
 
-        // Helper function to calculate settlements
-        const divideAndConquer = (expenses) => {
-            // Base case: if only one expense, calculate directly
-            if (expenses.length === 1) {
-                const expense = expenses[0];
-                const owedPerPerson = expense.amount / expense.sharedAmong.length;
-                return expense.sharedAmong.map((share) => ({
-                    from: expense.paidBy.userId,
-                    to: share.userId,
-                    amount: owedPerPerson,
-                }));
-            }
-
-            // Divide the array into two halves
-            const mid = Math.floor(expenses.length / 2);
-            const leftSettlements = divideAndConquer(expenses.slice(0, mid));
-            const rightSettlements = divideAndConquer(expenses.slice(mid));
-
-            // Merge the two settlements
-            return [...leftSettlements, ...rightSettlements];
-        };
-
-        // Call the divideAndConquer function on the expenses
-        const settlements = divideAndConquer(expenses);
-
-        res.status(200).json({ message: 'Settlements calculated', settlements });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+    if (!name || !amount || !participants || participants.length === 0) {
+        res.status(400);
+        throw new Error('Please provide all required fields');
     }
-};
 
-module.exports = { calculateSettlements };
+    const expense = await SharedExpense.create({
+        user: req.user.id,
+        name,
+        amount,
+        participants,
+    });
+
+    res.status(201).json(expense);
+});
+
+module.exports = {
+    getSharedExpenses,
+    addSharedExpense,
+};

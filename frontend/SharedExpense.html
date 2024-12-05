@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Expense</title>
+    <style>
+        /* General styling shared across pages */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(240, 245, 250);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgb(20, 83, 116);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        header nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        header nav ul li {
+            display: inline;
+        }
+
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        header nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgb(20, 83, 116);
+            color: white;
+        }
+
+        form {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: rgb(20, 83, 116);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(17, 72, 102);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+            </ul>
+        </nav>
+        <h1>Shared Expense</h1>
+    </header>
+
+    <!-- Table for displaying shared expenses -->
+    <table>
+        <thead>
+            <tr>
+                <th>Expense Name</th>
+                <th>Amount</th>
+                <th>Participants</th>
+                <th>Per Participant</th>
+            </tr>
+        </thead>
+        <tbody id="sharedExpenseTableBody">
+            <!-- Shared expenses will be dynamically loaded here -->
+        </tbody>
+    </table>
+
+    <!-- Form for adding shared expenses -->
+    <form id="addSharedExpenseForm">
+        <h3>Add New Shared Expense</h3>
+        <label for="expenseName">Expense Name</label>
+        <input type="text" id="expenseName" placeholder="Expense Name (e.g., Dinner)" required>
+
+        <label for="totalAmount">Total Amount</label>
+        <input type="number" id="totalAmount" placeholder="Total Amount (₱)" required>
+
+        <label for="participants">Participants (comma-separated)</label>
+        <input type="text" id="participants" placeholder="e.g., Alice, Bob, Charlie" required>
+
+        <button type="submit">Add Shared Expense</button>
+    </form>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api/shared-expenses'; // Backend API URL
+        const token = localStorage.getItem('token'); // Retrieve JWT token
+
+        // Fetch and display shared expenses
+        async function fetchSharedExpenses() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Attach authorization token
+                    }
+                });
+                if (!response.ok) throw new Error('Failed to fetch shared expenses'); // Handle error
+
+                const sharedExpenses = await response.json();
+                const tableBody = document.getElementById('sharedExpenseTableBody');
+                tableBody.innerHTML = ''; // Clear the table
+
+                sharedExpenses.forEach(expense => {
+                    const perParticipant = (expense.amount / expense.participants.length).toFixed(2);
+                    const row = `
+                        <tr>
+                            <td>${expense.name}</td>
+                            <td>₱ ${expense.amount.toFixed(2)}</td>
+                            <td>${expense.participants.join(', ')}</td>
+                            <td>₱ ${perParticipant}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row; // Add new row to table
+                });
+            } catch (error) {
+                alert('Error fetching shared expenses: ' + error.message); // Alert on error
+            }
+        }
+
+        // Handle form submission for adding shared expenses
+        document.getElementById('addSharedExpenseForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const name = document.getElementById('expenseName').value;
+            const amount = parseFloat(document.getElementById('totalAmount').value);
+            const participants = document.getElementById('participants').value.split(',').map(p => p.trim());
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', // Set JSON content type
+                        'Authorization': `Bearer ${token}` // Attach authorization token
+                    },
+                    body: JSON.stringify({ name, amount, participants }) // Send shared expense data
+                });
+                if (!response.ok) throw new Error('Failed to add shared expense'); // Handle error
+
+                alert('Shared expense added successfully!'); // Alert success
+                fetchSharedExpenses(); // Refresh the shared expense table
+                document.getElementById('addSharedExpenseForm').reset(); // Reset the form
+            } catch (error) {
+                alert('Error adding shared expense: ' + error.message); // Alert on error
+            }
+        });
+
+        // Fetch shared expenses on page load
+        window.onload = fetchSharedExpenses;
+    </script>
+</body>
+</html>

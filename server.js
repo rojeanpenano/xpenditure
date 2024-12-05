@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
+const sharedExpenseRoutes = require('./routes/sharedExpenseRoutes'); // Import shared expense routes
 const errorHandler = require('./middleware/errorHandler');
 
 // Initialize environment variables
@@ -27,6 +28,7 @@ app.use(helmet()); // Add security headers
 app.use('/api/users', userRoutes); // User-related endpoints
 app.use('/api/transactions', transactionRoutes); // Transaction-related endpoints
 app.use('/api/budgets', budgetRoutes); // Budget-related endpoints
+app.use('/api/shared-expenses', sharedExpenseRoutes); // Shared expense-related endpoints
 
 // Error handling middleware
 app.use(errorHandler);
