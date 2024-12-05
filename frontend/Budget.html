@@ -9,14 +9,30 @@
 <body>
     <div class="budget-container">
         <h1>Budget Management</h1>
+        <!-- Form for setting a new budget -->
         <form id="addBudgetForm">
             <input type="text" id="budgetCategory" placeholder="Category" required>
             <input type="number" id="budgetAmount" placeholder="Amount" required>
             <button type="submit">Set Budget</button>
         </form>
+
+        <!-- Table to display the budgets -->
         <h2>Your Budgets</h2>
-        <div id="budgetList"></div>
+        <div id="budgetList">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="budgetTableBody">
+                    <!-- Budgets will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
     </div>
-    <script src="budget.js"></script>
+    <!-- Including the budget management script -->
+    <script type="module" src="budget.js"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getBudgets, setBudget } = require('../controllers/budgetController');
-const { protect } = require('../middleware/authMiddleware');
+const { getBudgets, setBudget } = require('../controllers/budgetController'); // Import controllers
+const { protect } = require('../middleware/authMiddleware'); // Import middleware
 
-// Define routes for fetching and creating budgets
+// Define routes
 router.route('/')
-    .get(protect, getBudgets)   // Get all budgets for a user
-    .post(protect, setBudget); // Add a new budget
+    .get(protect, getBudgets) // GET route for fetching budgets
+    .post(protect, setBudget); // POST route for adding a budget
 
-module.exports = router;
+module.exports = router; // Export the router

@@ -21,7 +21,7 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^8.8.2",
     "nodemailer": "^6.9.16",
-    "npm": "^10.9.1",
+    "npm": "^10.9.2",
     "winston": "^3.8.2"
   },
   "devDependencies": {
