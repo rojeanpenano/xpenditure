@@ -2,11 +2,11 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f5f5f5;
+    background-color: #f9fafb; /* Light gray background */
 }
 
 header {
-    background-color: #007bff;
+    background-color: #0056b3; /* Blue header */
     padding: 1em 0;
     color: white;
     text-align: center;
@@ -33,57 +33,77 @@ header nav ul li a {
 }
 
 header nav ul li a:hover, .active {
-    color: #ffcb00;
+    color: #ffffff;
 }
 
-.budget-container {
-    max-width: 800px;
-    margin: 2em auto;
-    background: white;
+.content-container {
     padding: 2em;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    max-width: 1200px;
+    margin: auto;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
 
-.budget-container h1 {
+.title-section h1 {
+    color: #0056b3;
     text-align: center;
-    margin-bottom: 1em;
-    color: #007bff;
+    margin-bottom: 1.5em;
 }
 
-.form-section, .budget-list {
+.form-container {
     margin-bottom: 2em;
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+.form-container h2 {
+    color: #333;
+    margin-bottom: 1em;
 }
 
-form input, form button {
+.form-group {
+    margin-bottom: 1em;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.form-group input {
+    width: 100%;
     padding: 0.8em;
-    font-size: 1em;
     border: 1px solid #ddd;
     border-radius: 4px;
 }
 
-form button {
-    background-color: #007bff;
+.btn-primary {
+    background-color: #0056b3;
     color: white;
+    padding: 0.8em 1.5em;
+    border: none;
+    border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-form button:hover {
-    background-color: #0056b3;
+.btn-primary:hover {
+    background-color: #bdd1e7;
+}
+
+.table-container {
+    margin-top: 2em;
+}
+
+.table-container h2 {
+    color: #333;
+    margin-bottom: 1em;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1em;
 }
 
 table th, table td {
@@ -92,10 +112,15 @@ table th, table td {
     border-bottom: 1px solid #ddd;
 }
 
+table th {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
 footer {
     text-align: center;
-    margin-top: 2em;
     padding: 1em;
     background-color: #f1f1f1;
     color: #555;
+    margin-top: 2em;
 }

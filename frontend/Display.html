@@ -5,69 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Management</title>
     <style>
+        /* General body styling */
         body {
             font-family: Arial, sans-serif;
-            background-color: rgb(240, 245, 250);
+            background-color: rgb(240, 245, 250); /* Light background for better readability */
             padding: 20px;
         }
 
+        /* Header styling with navigation and title */
         header {
+            display: flex;
+            align-items: center; /* Center align items vertically */
+            justify-content: space-between; /* Space between nav and title */
+            background-color: rgb(20, 83, 116); /* Blue background */
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* Navigation styling for Home button */
+        header nav ul {
+            list-style: none; /* Remove default bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Styling for each navigation item */
+        header nav ul li {
+            display: inline; /* Inline list items */
+        }
+
+        /* Styling for links inside the navigation */
+        header nav ul li a {
+            color: white; /* White text */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;
+            padding: 5px 10px; /* Padding around text */
+            border-radius: 5px;
+            transition: background-color 0.3s; /* Smooth hover effect */
+        }
+
+        /* Hover effect for navigation links */
+        header nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency on hover */
+        }
+
+        /* Styling for the main title (h1) */
+        h1 {
+            flex-grow: 1; /* Take remaining space to center-align title */
             text-align: center;
-            background-color: rgb(20, 83, 116);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
+            font-size: 1.5em;
+            margin: 0;
         }
 
+        /* Table styling for transaction data */
         table {
-            width: 100%;
-            margin: 20px 0;
-            border-collapse: collapse;
+            width: 100%; /* Full-width table */
+            margin: 20px 0; /* Space above and below */
+            border-collapse: collapse; /* Remove gaps between table cells */
         }
 
+        /* Styling for table headers and data */
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            border: 1px solid #ddd; /* Light gray border */
+            padding: 8px; /* Padding inside cells */
+            text-align: left; /* Left-align text */
         }
 
+        /* Header row styling */
         th {
-            background-color: rgb(20, 83, 116);
-            color: white;
+            background-color: rgb(20, 83, 116); /* Blue background */
+            color: white; /* White text */
         }
 
+        /* Form styling */
         form {
-            margin-top: 20px;
-            background-color: white;
+            margin-top: 20px; /* Space above the form */
+            background-color: white; /* White form background */
             padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
         }
 
+        /* Input, select, and button styling */
         input, select, button {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            display: block; /* Block-level elements */
+            width: 100%; /* Full-width inputs */
+            margin-bottom: 10px; /* Space between inputs */
+            padding: 10px; /* Internal padding */
+            border: 1px solid #ddd; /* Light gray border */
+            border-radius: 5px; /* Rounded corners */
         }
 
+        /* Button-specific styling */
         button {
-            background-color: rgb(20, 83, 116);
-            color: white;
-            border: none;
-            cursor: pointer;
+            background-color: rgb(20, 83, 116); /* Blue background */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            cursor: pointer; /* Pointer cursor on hover */
         }
 
+        /* Hover effect for buttons */
         button:hover {
-            background-color: rgb(17, 72, 102);
+            background-color: rgb(17, 72, 102); /* Darker blue on hover */
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Transaction Management</h1>
+        <!-- Navigation bar for Home button -->
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li> <!-- Home button -->
+            </ul>
+        </nav>
+        <h1>Transaction Management</h1> <!-- Page title -->
     </header>
 
     <!-- Table for displaying transactions -->
@@ -111,7 +164,7 @@
     </form>
 
     <script>
-        const API_URL = 'http://localhost:5000/api/transactions';
+        const API_URL = 'http://localhost:5000/api/transactions'; // Backend API URL
         const token = localStorage.getItem('token'); // Retrieve JWT token
 
         // Fetch and display transactions
@@ -119,10 +172,10 @@
             try {
                 const response = await fetch(API_URL, {
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Authorization': `Bearer ${token}` // Attach authorization token
                     }
                 });
-                if (!response.ok) throw new Error('Failed to fetch transactions');
+                if (!response.ok) throw new Error('Failed to fetch transactions'); // Handle error
 
                 const transactions = await response.json();
                 const tableBody = document.getElementById('transactionTableBody');
@@ -138,16 +191,16 @@
                             <td>${transaction.type}</td>
                         </tr>
                     `;
-                    tableBody.innerHTML += row;
+                    tableBody.innerHTML += row; // Add new row to table
                 });
             } catch (error) {
-                alert('Error fetching transactions: ' + error.message);
+                alert('Error fetching transactions: ' + error.message); // Alert on error
             }
         }
 
         // Handle form submission for adding transactions
         document.getElementById('transactionForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission behavior
 
             const date = document.getElementById('date').value;
             const description = document.getElementById('description').value;
@@ -159,18 +212,18 @@
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        'Content-Type': 'application/json', // Set JSON content type
+                        'Authorization': `Bearer ${token}` // Attach authorization token
                     },
-                    body: JSON.stringify({ date, description, category, amount, type })
+                    body: JSON.stringify({ date, description, category, amount, type }) // Send transaction data
                 });
-                if (!response.ok) throw new Error('Failed to add transaction');
+                if (!response.ok) throw new Error('Failed to add transaction'); // Handle error
 
-                alert('Transaction added successfully!');
+                alert('Transaction added successfully!'); // Alert success
                 fetchTransactions(); // Refresh the transactions table
-                document.getElementById('transactionForm').reset();
+                document.getElementById('transactionForm').reset(); // Reset the form
             } catch (error) {
-                alert('Error adding transaction: ' + error.message);
+                alert('Error adding transaction: ' + error.message); // Alert on error
             }
         });
 

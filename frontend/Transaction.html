@@ -3,77 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transactions</title>
-    <link rel="stylesheet" href="transact.css">
+    <title>Transaction Management</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Transactions</h1>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="transaction-container">
+        <h1>Transaction Management</h1>
 
-    <form id="transactionForm">
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
+        <!-- Form for adding a new transaction -->
+        <section class="form-section">
+            <h2>Add New Transaction</h2>
+            <form id="addTransactionForm">
+                <input type="text" id="transactionCategory" placeholder="Category (e.g., Bills)" required>
+                <input type="number" id="transactionAmount" placeholder="Amount (₱)" required>
+                <input type="date" id="transactionDate" required>
+                <button type="submit">Add Transaction</button>
+            </form>
+        </section>
 
-        <label for="amount">Amount:</label>
-        <input type="number" id="amount" name="amount" required>
-
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category" required>
-
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea>
-
-        <button type="submit">Add Transaction</button>
-    </form>
-
-    <p id="feedback" style="display:none;"></p>
-
-    <script type="module">
-        import { BASE_URL } from './apiConfig.js'; // Import API base URL
-
-        // Reference the transaction form
-        const transactionForm = document.getElementById('transactionForm');
-        const feedback = document.getElementById('feedback');
-
-        // Form submit handler
-        transactionForm.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission behavior
-
-            // Collect form data
-            const transactionData = {
-                date: document.getElementById('date').value,
-                amount: parseFloat(document.getElementById('amount').value),
-                category: document.getElementById('category').value,
-                description: document.getElementById('description').value,
-            };
-
-            try {
-                // Send POST request to the backend
-                const response = await fetch(`${BASE_URL}/transactions`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('token')}`, // Include auth token
-                    },
-                    body: JSON.stringify(transactionData),
-                });
-
-                if (response.ok) {
-                    feedback.style.display = 'block';
-                    feedback.style.color = 'green';
-                    feedback.textContent = 'Transaction added successfully!';
-                    transactionForm.reset(); // Clear form after successful submission
-                } else {
-                    const errorData = await response.json();
-                    feedback.style.display = 'block';
-                    feedback.style.color = 'red';
-                    feedback.textContent = `Error: ${errorData.message || 'Failed to add transaction'}`;
-                }
-            } catch (error) {
-                feedback.style.display = 'block';
-                feedback.style.color = 'red';
-                feedback.textContent = `Network error: ${error.message}`;
-            }
-        });
-    </script>
+        <!-- Table to display transactions -->
+        <section class="transaction-list">
+            <h2>Your Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Amount (₱)</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionTableBody">
+                    <!-- Transactions will be dynamically added here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Xpenditure. All Rights Reserved.</p>
+    </footer>
+    <!-- Including the transaction management script -->
+    <script type="module" src="transaction.js"></script>
 </body>
 </html>

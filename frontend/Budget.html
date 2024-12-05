@@ -4,51 +4,210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Budget Management</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(240, 245, 250); /* Light background for better readability */
+            padding: 20px;
+        }
+
+        /* Header styling with navigation and title */
+        header {
+            display: flex;
+            align-items: center; /* Center align items vertically */
+            justify-content: space-between; /* Space between nav and title */
+            background-color: rgb(20, 83, 116); /* Blue background */
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* Navigation styling for Home button */
+        header nav ul {
+            list-style: none; /* Remove default bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        /* Styling for each navigation item */
+        header nav ul li {
+            display: inline; /* Inline list items */
+        }
+
+        /* Styling for links inside the navigation */
+        header nav ul li a {
+            color: white; /* White text */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;
+            padding: 5px 10px; /* Padding around text */
+            border-radius: 5px;
+            transition: background-color 0.3s; /* Smooth hover effect */
+        }
+
+        /* Hover effect for navigation links */
+        header nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Slight transparency on hover */
+        }
+
+        /* Styling for the main title (h1) */
+        h1 {
+            flex-grow: 1; /* Take remaining space to center-align title */
+            text-align: center;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        /* Table styling for budget data */
+        table {
+            width: 100%; /* Full-width table */
+            margin: 20px 0; /* Space above and below */
+            border-collapse: collapse; /* Remove gaps between table cells */
+        }
+
+        /* Styling for table headers and data */
+        th, td {
+            border: 1px solid #ddd; /* Light gray border */
+            padding: 8px; /* Padding inside cells */
+            text-align: left; /* Left-align text */
+        }
+
+        /* Header row styling */
+        th {
+            background-color: rgb(20, 83, 116); /* Blue background */
+            color: white; /* White text */
+        }
+
+        /* Form styling */
+        form {
+            margin-top: 20px; /* Space above the form */
+            background-color: white; /* White form background */
+            padding: 20px;
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+        }
+
+        /* Input, select, and button styling */
+        input, button {
+            display: block; /* Block-level elements */
+            width: 100%; /* Full-width inputs */
+            margin-bottom: 10px; /* Space between inputs */
+            padding: 10px; /* Internal padding */
+            border: 1px solid #ddd; /* Light gray border */
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        /* Button-specific styling */
+        button {
+            background-color: rgb(20, 83, 116); /* Blue background */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            cursor: pointer; /* Pointer cursor on hover */
+        }
+
+        /* Hover effect for buttons */
+        button:hover {
+            background-color: rgb(17, 72, 102); /* Darker blue on hover */
+        }
+    </style>
 </head>
 <body>
     <header>
+        <!-- Navigation bar for Home button -->
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="Budget.html" class="active">Budget Management</a></li>
-                <li><a href="Transaction.html">Transactions</a></li>
-                <li><a href="Profile.html">Profile</a></li>
+                <li><a href="index.html" class="active">Home</a></li> <!-- Home button -->
             </ul>
         </nav>
+        <h1>Budget Management</h1> <!-- Page title -->
     </header>
-    <main class="budget-container">
-        <h1>Budget Management</h1>
-        <!-- Form for setting a new budget -->
-        <section class="form-section">
-            <h2>Add New Budget</h2>
-            <form id="addBudgetForm">
-                <input type="text" id="budgetCategory" placeholder="Category (e.g., Food)" required>
-                <input type="number" id="budgetAmount" placeholder="Amount (₱)" required>
-                <button type="submit">Set Budget</button>
-            </form>
-        </section>
 
-        <!-- Table to display the budgets -->
-        <section class="budget-list">
-            <h2>Your Budgets</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Amount (₱)</th>
-                    </tr>
-                </thead>
-                <tbody id="budgetTableBody">
-                    <!-- Budgets will be dynamically added here -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Xpenditure. All Rights Reserved.</p>
-    </footer>
-    <!-- Including the budget management script -->
-    <script type="module" src="budget.js"></script>
+    <!-- Table for displaying budgets -->
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Amount (₱)</th>
+            </tr>
+        </thead>
+        <tbody id="budgetTableBody">
+            <!-- Budgets will be dynamically loaded here -->
+        </tbody>
+    </table>
+
+    <!-- Form for adding budgets -->
+    <form id="addBudgetForm">
+        <h3>Add New Budget</h3>
+        <label for="budgetCategory">Category</label>
+        <input type="text" id="budgetCategory" placeholder="Category (e.g., Food)" required>
+
+        <label for="budgetAmount">Amount</label>
+        <input type="number" id="budgetAmount" placeholder="Amount (₱)" required>
+
+        <button type="submit">Set Budget</button>
+    </form>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api/budgets'; // Backend API URL
+        const token = localStorage.getItem('token'); // Retrieve JWT token
+
+        // Fetch and display budgets
+        async function fetchBudgets() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Attach authorization token
+                    }
+                });
+                if (!response.ok) throw new Error('Failed to fetch budgets'); // Handle error
+
+                const budgets = await response.json();
+                const tableBody = document.getElementById('budgetTableBody');
+                tableBody.innerHTML = ''; // Clear the table
+
+                budgets.forEach(budget => {
+                    const row = `
+                        <tr>
+                            <td>${budget.category}</td>
+                            <td>₱ ${budget.amount.toFixed(2)}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row; // Add new row to table
+                });
+            } catch (error) {
+                alert('Error fetching budgets: ' + error.message); // Alert on error
+            }
+        }
+
+        // Handle form submission for adding budgets
+        document.getElementById('addBudgetForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const category = document.getElementById('budgetCategory').value;
+            const amount = parseFloat(document.getElementById('budgetAmount').value);
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json', // Set JSON content type
+                        'Authorization': `Bearer ${token}` // Attach authorization token
+                    },
+                    body: JSON.stringify({ category, amount }) // Send budget data
+                });
+                if (!response.ok) throw new Error('Failed to add budget'); // Handle error
+
+                alert('Budget added successfully!'); // Alert success
+                fetchBudgets(); // Refresh the budgets table
+                document.getElementById('addBudgetForm').reset(); // Reset the form
+            } catch (error) {
+                alert('Error adding budget: ' + error.message); // Alert on error
+            }
+        });
+
+        // Fetch budgets on page load
+        window.onload = fetchBudgets;
+    </script>
 </body>
 </html>
