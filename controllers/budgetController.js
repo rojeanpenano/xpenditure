@@ -1,48 +1,32 @@
 const asyncHandler = require('express-async-handler');
+const Budget = require('../models/Budget');
 
-// Temporary in-memory storage for budgets (Replace with database logic in production)
-const budgets = [];
-
-// @desc    Get all budgets for a user
-// @route   GET /budgets
-// @access  Private
-exports.getBudgets = asyncHandler(async (req, res) => {
-    try {
-        const userBudgets = budgets.filter(budget => budget.userId === req.user.id);
-        res.status(200).json(userBudgets || []); // Return an empty array if no budgets exist
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to fetch budgets' });
-    }
+// @desc Get budgets for the authenticated user
+// @route GET /budgets
+// @access Private
+const getBudgets = asyncHandler(async (req, res) => {
+    const budgets = await Budget.find({ user: req.user.id }); // Find budgets for the logged-in user
+    res.status(200).json(budgets);
 });
 
-// @desc    Set or update a budget for a specific category
-// @route   POST /budgets
-// @access  Private
-exports.setBudget = asyncHandler(async (req, res) => {
+// @desc Add a new budget
+// @route POST /budgets
+// @access Private
+const setBudget = asyncHandler(async (req, res) => {
     const { category, amount } = req.body;
 
     if (!category || !amount) {
-        res.status(400).json({ message: 'Please provide both category and amount' });
-        return;
+        res.status(400);
+        throw new Error('Please provide both category and amount.');
     }
 
-    try {
-        const existingBudget = budgets.find(
-            budget => budget.userId === req.user.id && budget.category === category
-        );
+    const budget = await Budget.create({
+        user: req.user.id, // Associate budget with the logged-in user
+        category,
+        amount,
+    });
 
-        if (existingBudget) {
-            existingBudget.amount = amount; // Update the existing budget
-        } else {
-            budgets.push({
-                userId: req.user.id,
-                category,
-                amount,
-            });
-        }
-
-        res.status(200).json({ message: 'Budget set successfully' });
-    } catch (error) {
-        res.status(500).json({ message: 'Failed to set budget' });
-    }
+    res.status(201).json(budget);
 });
+
+module.exports = { getBudgets, setBudget };
