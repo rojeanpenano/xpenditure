@@ -7,31 +7,47 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="budget-container">
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Budget.html" class="active">Budget Management</a></li>
+                <li><a href="Transaction.html">Transactions</a></li>
+                <li><a href="Profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="budget-container">
         <h1>Budget Management</h1>
         <!-- Form for setting a new budget -->
-        <form id="addBudgetForm">
-            <input type="text" id="budgetCategory" placeholder="Category" required>
-            <input type="number" id="budgetAmount" placeholder="Amount" required>
-            <button type="submit">Set Budget</button>
-        </form>
+        <section class="form-section">
+            <h2>Add New Budget</h2>
+            <form id="addBudgetForm">
+                <input type="text" id="budgetCategory" placeholder="Category (e.g., Food)" required>
+                <input type="number" id="budgetAmount" placeholder="Amount (₱)" required>
+                <button type="submit">Set Budget</button>
+            </form>
+        </section>
 
         <!-- Table to display the budgets -->
-        <h2>Your Budgets</h2>
-        <div id="budgetList">
+        <section class="budget-list">
+            <h2>Your Budgets</h2>
             <table>
                 <thead>
                     <tr>
                         <th>Category</th>
-                        <th>Amount</th>
+                        <th>Amount (₱)</th>
                     </tr>
                 </thead>
                 <tbody id="budgetTableBody">
                     <!-- Budgets will be dynamically added here -->
                 </tbody>
             </table>
-        </div>
-    </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Xpenditure. All Rights Reserved.</p>
+    </footer>
     <!-- Including the budget management script -->
     <script type="module" src="budget.js"></script>
 </body>
