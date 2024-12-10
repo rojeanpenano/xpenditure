@@ -129,7 +129,6 @@
     <div class="budget-summary">
         <p id="setBudget">Set Budget: ₱0.00</p>
         <p id="remainingBudget">Remaining Budget: ₱0.00</p>
-        <p id="asOfDate">As of: -</p>
     </div>
 
     <table>
@@ -185,7 +184,6 @@
                     const budget = budgets[0];
                     document.getElementById('setBudget').textContent = `Set Budget: ₱${budget.amount.toFixed(2)}`;
                     document.getElementById('remainingBudget').textContent = `Remaining Budget: ₱${budget.remaining.toFixed(2)}`;
-                    document.getElementById('asOfDate').textContent = `As of: ${new Date().toLocaleDateString()}`;
                 }
             } catch (error) {
                 console.error('Error fetching budgets:', error);
