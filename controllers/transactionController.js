@@ -1,6 +1,28 @@
 const Transaction = require('../models/Transaction'); // Import the Transaction model
 
 /**
+ * Categorize a transaction using the Greedy Algorithm
+ * @param {string} description - Description of the transaction
+ * @returns {string} - The assigned category
+ */
+const categorizeTransaction = (description) => {
+    const categories = {
+        food: ['grocery', 'restaurant', 'dinner'],
+        utilities: ['electricity', 'internet', 'water'],
+        travel: ['taxi', 'bus', 'flight'],
+    };
+
+    // Iterate over categories and their keywords
+    for (const [category, keywords] of Object.entries(categories)) {
+        if (keywords.some((keyword) => description.toLowerCase().includes(keyword))) {
+            return category; // Greedily assign the first matching category
+        }
+    }
+
+    return 'other'; // Default category if no match is found
+};
+
+/**
  * Add a new transaction
  * @route POST /api/transactions
  * @access Private
@@ -11,7 +33,7 @@ const addTransaction = async (req, res) => {
         const { date, description, category, amount, type } = req.body;
 
         // Validate that all required fields are provided
-        if (!date || !description || !category || !amount || !type) {
+        if (!date || !description || !amount || !type) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
@@ -20,12 +42,15 @@ const addTransaction = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized. Please log in again.' });
         }
 
+        // Apply the Greedy Algorithm to assign a category if not provided
+        const assignedCategory = category || categorizeTransaction(description);
+
         // Create a new transaction object
         const transaction = new Transaction({
             userId: req.user.id, // Attach the user ID to the transaction
             date,
             description,
-            category,
+            category: assignedCategory, // Use the assigned category
             amount,
             type,
         });

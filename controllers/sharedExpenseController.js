@@ -13,18 +13,23 @@ const getSharedExpenses = asyncHandler(async (req, res) => {
 // @route POST /api/shared-expenses
 // @access Private
 const addSharedExpense = asyncHandler(async (req, res) => {
-    const { name, amount, participants } = req.body;
+    const { name, amount, participants, date } = req.body; // Added `date` to request body
 
-    if (!name || !amount || !participants || participants.length === 0) {
+    if (!name || !amount || !participants || participants.length === 0 || !date) {
         res.status(400);
-        throw new Error('Please provide all required fields');
+        throw new Error('Please provide all required fields'); // Ensure all fields are provided
     }
+
+    // Divide and Conquer logic: Calculate per-participant share
+    const perParticipant = (amount / participants.length).toFixed(2);
 
     const expense = await SharedExpense.create({
         user: req.user.id,
         name,
         amount,
         participants,
+        perParticipant, // Store the calculated per-participant share
+        date, // Include date for tracking shared expenses
     });
 
     res.status(201).json(expense);
