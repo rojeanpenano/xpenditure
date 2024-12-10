@@ -116,7 +116,6 @@
     <table>
         <thead>
             <tr>
-                <th>Category</th>
                 <th>Amount (₱)</th>
                 <th>Start Date</th>
                 <th>End Date</th>
@@ -127,7 +126,6 @@
         </tbody>
     </table>
 
-    <!-- Form for adding budgets -->
     <!-- Budget Form -->
     <form id="budgetForm">
         <h3>Set Budget</h3>
@@ -143,7 +141,6 @@
         <button type="submit">Set Budget</button>
     </form>
 
-
     <script>
         const API_URL = 'https://xpenditure-1krq.onrender.com/api/budgets';
         const token = localStorage.getItem('token'); // Retrieve JWT token
@@ -152,26 +149,23 @@
         async function fetchBudgets() {
             try {
                 const response = await fetch(API_URL, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                    headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!response.ok) throw new Error('Failed to fetch budgets');
 
                 const budgets = await response.json();
                 const tableBody = document.getElementById('budgetTableBody');
-                tableBody.innerHTML = ''; // Clear the table
+                tableBody.innerHTML = '';
 
-                budgets.forEach(budget => {
+                budgets.forEach((budget) => {
                     const row = `
                         <tr>
-                            <td>${budget.category}</td>
-                            <td>${budget.amount}</td>
+                            <td>₱${budget.amount}</td>
                             <td>${new Date(budget.startDate).toLocaleDateString()}</td>
                             <td>${new Date(budget.endDate).toLocaleDateString()}</td>
                         </tr>
                     `;
-                    tableBody.innerHTML += row; // Add new row to table
+                    tableBody.innerHTML += row;
                 });
             } catch (error) {
                 alert('Error fetching budgets: ' + error.message);
@@ -180,9 +174,8 @@
 
         // Handle form submission for adding budgets
         document.getElementById('budgetForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission behavior
+            event.preventDefault();
 
-            const category = document.getElementById('category').value;
             const amount = parseFloat(document.getElementById('amount').value);
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
@@ -192,17 +185,18 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+                        Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({ category, amount, startDate, endDate })
+                    body: JSON.stringify({ amount, startDate, endDate }),
                 });
-                if (!response.ok) throw new Error('Failed to add budget');
 
-                alert('Budget added successfully!');
-                fetchBudgets(); // Refresh the budgets table
-                document.getElementById('budgetForm').reset(); // Reset the form
+                if (!response.ok) throw new Error('Failed to set budget');
+
+                alert('Budget set successfully!');
+                fetchBudgets();
+                document.getElementById('budgetForm').reset();
             } catch (error) {
-                alert('Error adding budget: ' + error.message);
+                alert('Error setting budget: ' + error.message);
             }
         });
 

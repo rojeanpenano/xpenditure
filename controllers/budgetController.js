@@ -14,7 +14,7 @@ const getBudgets = asyncHandler(async (req, res) => {
 // @route POST /api/budgets
 // @access Private
 const setBudget = asyncHandler(async (req, res) => {
-    const { amount, currency = 'PHP', startDate, endDate } = req.body;
+    const { amount, startDate, endDate } = req.body;
 
     if (!amount || !startDate || !endDate) {
         res.status(400);
@@ -24,7 +24,6 @@ const setBudget = asyncHandler(async (req, res) => {
     const budget = await Budget.create({
         user: req.user.id,
         amount,
-        currency,
         startDate,
         endDate,
     });
