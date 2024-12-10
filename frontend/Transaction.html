@@ -4,7 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaction Management</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgb(240, 245, 250);
+            padding: 20px;
+        }
+
+        /* Header styling */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgb(20, 83, 116);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            display: inline;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgb(20, 83, 116);
+            color: white;
+        }
+
+        /* Form styling */
+        form {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input, select, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: rgb(20, 83, 116);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(17, 72, 102);
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -13,42 +109,115 @@
                 <li><a href="index.html" class="active">Home</a></li>
             </ul>
         </nav>
-    </header>
-    <main class="transaction-container">
         <h1>Transaction Management</h1>
+    </header>
 
-        <!-- Form for adding a new transaction -->
-        <section class="form-section">
-            <h2>Add New Transaction</h2>
-            <form id="addTransactionForm">
-                <input type="text" id="transactionCategory" placeholder="Category (e.g., Bills)" required>
-                <input type="number" id="transactionAmount" placeholder="Amount (₱)" required>
-                <input type="date" id="transactionDate" required>
-                <button type="submit">Add Transaction</button>
-            </form>
-        </section>
+    <!-- Table for displaying transactions -->
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody id="transactionTableBody">
+            <!-- Transactions will be dynamically loaded here -->
+        </tbody>
+    </table>
 
-        <!-- Table to display transactions -->
-        <section class="transaction-list">
-            <h2>Your Transactions</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Amount (₱)</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="transactionTableBody">
-                    <!-- Transactions will be dynamically added here -->
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 Xpenditure. All Rights Reserved.</p>
-    </footer>
-    <!-- Including the transaction management script -->
-    <script type="module" src="transaction.js"></script>
+    <!-- Form for adding transactions -->
+    <form id="transactionForm">
+        <h3>Add New Transaction</h3>
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" placeholder="Enter description" required>
+
+        <label for="category">Category</label>
+        <input type="text" id="category" name="category" placeholder="Enter category" required>
+
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+
+        <label for="type">Type</label>
+        <select id="type" name="type" required>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+        </select>
+
+        <button type="submit">Add Transaction</button>
+    </form>
+
+    <script>
+        const API_URL = 'https://xpenditure-1krq.onrender.com/api/transactions';
+        const token = localStorage.getItem('token'); // Retrieve JWT token
+
+        // Fetch and display transactions
+        async function fetchTransactions() {
+            try {
+                const response = await fetch(API_URL, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) throw new Error('Failed to fetch transactions');
+
+                const transactions = await response.json();
+                const tableBody = document.getElementById('transactionTableBody');
+                tableBody.innerHTML = ''; // Clear the table
+
+                transactions.forEach(transaction => {
+                    const row = `
+                        <tr>
+                            <td>${new Date(transaction.date).toLocaleDateString()}</td>
+                            <td>${transaction.description}</td>
+                            <td>${transaction.category}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.type}</td>
+                        </tr>
+                    `;
+                    tableBody.innerHTML += row; // Add new row to table
+                });
+            } catch (error) {
+                alert('Error fetching transactions: ' + error.message);
+            }
+        }
+
+        // Handle form submission for adding transactions
+        document.getElementById('transactionForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission behavior
+
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const type = document.getElementById('type').value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ date, description, category, amount, type })
+                });
+                if (!response.ok) throw new Error('Failed to add transaction');
+
+                alert('Transaction added successfully!');
+                fetchTransactions(); // Refresh the transactions table
+                document.getElementById('transactionForm').reset(); // Reset the form
+            } catch (error) {
+                alert('Error adding transaction: ' + error.message);
+            }
+        });
+
+        // Fetch transactions on page load
+        window.onload = fetchTransactions;
+    </script>
 </body>
 </html>
