@@ -128,13 +128,11 @@
     </table>
 
     <!-- Form for adding budgets -->
+    <!-- Budget Form -->
     <form id="budgetForm">
-        <h3>Add New Budget</h3>
-        <label for="category">Category</label>
-        <input type="text" id="category" name="category" placeholder="Enter category" required>
-
+        <h3>Set Budget</h3>
         <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+        <input type="number" id="amount" name="amount" placeholder="Enter total budget amount" required>
 
         <label for="startDate">Start Date</label>
         <input type="date" id="startDate" name="startDate" required>
@@ -142,8 +140,9 @@
         <label for="endDate">End Date</label>
         <input type="date" id="endDate" name="endDate" required>
 
-        <button type="submit">Add Budget</button>
+        <button type="submit">Set Budget</button>
     </form>
+
 
     <script>
         const API_URL = 'https://xpenditure-1krq.onrender.com/api/budgets';

@@ -4,10 +4,13 @@ const protect = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Debug imported functions
-console.log({ addTransaction, getTransactions });
+// Debugging: Log imported functions
+console.log('addTransaction:', addTransaction);
+console.log('getTransactions:', getTransactions);
 
-// Routes for transactions
-router.route('/').get(protect, getTransactions).post(protect, addTransaction);
+// Define routes
+router.route('/')
+    .get(protect, getTransactions) // Route for fetching transactions
+    .post(protect, addTransaction); // Route for adding a new transaction
 
 module.exports = router;

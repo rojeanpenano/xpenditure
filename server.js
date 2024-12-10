@@ -8,13 +8,9 @@ const transactionRoutes = require('./routes/transactionRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
-// Load environment variables
 dotenv.config();
-
-// Connect to the database
 connectDB();
 
-// Initialize the app
 const app = express();
 
 // Middleware
@@ -30,8 +26,5 @@ app.use('/api/budgets', budgetRoutes);
 // Error handling middleware
 app.use(errorHandler);
 
-// Start the server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

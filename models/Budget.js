@@ -7,29 +7,21 @@ const budgetSchema = mongoose.Schema(
             required: true,
             ref: 'User',
         },
-        category: {
-            type: String,
-            required: [true, 'Please add a category'],
-        },
         amount: {
             type: Number,
             required: [true, 'Please add an amount'],
         },
-        currency: {
-            type: String,
-            default: 'PHP',
-        },
         startDate: {
             type: Date,
-            required: [true, 'Please add a start date'],
+            required: true,
         },
         endDate: {
             type: Date,
-            required: [true, 'Please add an end date'],
+            required: true,
         },
     },
     {
-        timestamps: true, // Automatically add createdAt and updatedAt fields
+        timestamps: true, // Automatically manage createdAt and updatedAt fields
     }
 );
 

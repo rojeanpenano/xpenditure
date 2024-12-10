@@ -14,16 +14,15 @@ const getBudgets = asyncHandler(async (req, res) => {
 // @route POST /api/budgets
 // @access Private
 const setBudget = asyncHandler(async (req, res) => {
-    const { category, amount, currency = 'PHP', startDate, endDate } = req.body;
+    const { amount, currency = 'PHP', startDate, endDate } = req.body;
 
-    if (!category || !amount || !startDate || !endDate) {
+    if (!amount || !startDate || !endDate) {
         res.status(400);
-        throw new Error('Please provide category, amount, start date, and end date.');
+        throw new Error('Please provide amount, start date, and end date.');
     }
 
     const budget = await Budget.create({
         user: req.user.id,
-        category,
         amount,
         currency,
         startDate,
@@ -33,7 +32,7 @@ const setBudget = asyncHandler(async (req, res) => {
     res.status(201).json(budget);
 });
 
-// @desc Calculate remaining budget for a category
+// @desc Calculate remaining budget
 // @route GET /api/budgets/:id/remaining
 // @access Private
 const getRemainingBudget = asyncHandler(async (req, res) => {
@@ -44,19 +43,18 @@ const getRemainingBudget = asyncHandler(async (req, res) => {
         throw new Error('Budget not found');
     }
 
-    const transactions = await Transaction.find({
+    // Fetch all expenses for the user within the budget's date range
+    const expenses = await Transaction.find({
         user: req.user.id,
-        category: budget.category,
+        type: 'expense',
         date: { $gte: budget.startDate, $lte: budget.endDate },
     });
 
-    const remaining = transactions.reduce((acc, tx) => {
-        return tx.type === 'expense' ? acc - tx.amount : acc + tx.amount;
-    }, budget.amount);
+    // Calculate the remaining amount
+    const totalSpent = expenses.reduce((acc, expense) => acc + expense.amount, 0);
+    const remaining = budget.amount - totalSpent;
 
     res.status(200).json({ remaining });
 });
 
-// Debug exported functions
-console.log({ getBudgets, setBudget, getRemainingBudget });
 module.exports = { getBudgets, setBudget, getRemainingBudget };

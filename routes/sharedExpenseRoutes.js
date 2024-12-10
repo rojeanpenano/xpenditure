@@ -1,12 +1,13 @@
 const express = require('express');
-const router = express.Router();
-const { getSharedExpenses, addSharedExpense } = require('../controllers/sharedExpenseController');
-const { protect } = require('../middleware/authMiddleware'); // Middleware for authentication
+const { addTransaction, getTransactions } = require('../controllers/transactionController');
+const protect = require('../middleware/authMiddleware');
 
-// GET and POST routes for shared expenses
-router
-    .route('/')
-    .get(protect, getSharedExpenses) // Get all shared expenses
-    .post(protect, addSharedExpense); // Add a new shared expense
+const router = express.Router();
+
+// Debug imported functions
+console.log({ addTransaction, getTransactions });
+
+// Routes for transactions
+router.route('/').get(protect, getTransactions).post(protect, addTransaction);
 
 module.exports = router;
