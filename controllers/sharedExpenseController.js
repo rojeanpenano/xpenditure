@@ -1,38 +1,34 @@
 const asyncHandler = require('express-async-handler');
 const SharedExpense = require('../models/SharedExpense');
 
-// @desc Get all shared expenses for the logged-in user
-// @route GET /api/shared-expenses
-// @access Private
+// Fetch shared expenses for a user
 const getSharedExpenses = asyncHandler(async (req, res) => {
-    const expenses = await SharedExpense.find({ user: req.user.id }); // Fetch expenses for the user
-    res.status(200).json(expenses);
+    const sharedExpenses = await SharedExpense.find({ user: req.user.id });
+    if (!sharedExpenses) {
+        res.status(404);
+        throw new Error('No shared expenses found');
+    }
+    res.status(200).json(sharedExpenses);
 });
 
-// @desc Add a new shared expense
-// @route POST /api/shared-expenses
-// @access Private
+// Add a new shared expense
 const addSharedExpense = asyncHandler(async (req, res) => {
-    const { name, amount, participants, date } = req.body; // Added `date` to request body
+    const { description, amount, participants, date } = req.body;
 
-    if (!name || !amount || !participants || participants.length === 0 || !date) {
+    if (!description || !amount || !participants || !date) {
         res.status(400);
-        throw new Error('Please provide all required fields'); // Ensure all fields are provided
+        throw new Error('Please provide all required fields');
     }
 
-    // Divide and Conquer logic: Calculate per-participant share
-    const perParticipant = (amount / participants.length).toFixed(2);
-
-    const expense = await SharedExpense.create({
+    const sharedExpense = await SharedExpense.create({
         user: req.user.id,
-        name,
+        description,
         amount,
         participants,
-        perParticipant, // Store the calculated per-participant share
-        date, // Include date for tracking shared expenses
+        date,
     });
 
-    res.status(201).json(expense);
+    res.status(201).json(sharedExpense);
 });
 
 module.exports = {

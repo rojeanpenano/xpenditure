@@ -125,22 +125,25 @@
     </table>
 
     <!-- Form for adding shared expenses -->
-    <form id="addSharedExpenseForm">
-        <h3>Add New Shared Expense</h3>
-        <label for="expenseName">Expense Name</label>
-        <input type="text" id="expenseName" placeholder="Expense Name (e.g., Dinner)" required>
+    <form id="sharedExpenseForm">
+        <h3>Add Shared Expense</h3>
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" required>
 
-        <label for="totalAmount">Total Amount</label>
-        <input type="number" id="totalAmount" placeholder="Total Amount (₱)" required>
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" required>
+
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required>
 
         <label for="participants">Participants (comma-separated)</label>
-        <input type="text" id="participants" placeholder="e.g., Alice, Bob, Charlie" required>
+        <input type="text" id="participants" name="participants" required>
 
-        <button type="submit">Add Shared Expense</button>
+        <button type="submit">Add Expense</button>
     </form>
 
     <script>
-        const API_URL = 'http://localhost:5000/api/shared-expenses'; // Backend API URL
+        const API_URL = 'https://xpenditure-1krq.onrender.com/api/shared-expenses';
         const token = localStorage.getItem('token'); // Retrieve JWT token
 
         // Fetch and display shared expenses
@@ -148,61 +151,65 @@
             try {
                 const response = await fetch(API_URL, {
                     headers: {
-                        'Authorization': `Bearer ${token}` // Attach authorization token
-                    }
+                        Authorization: `Bearer ${token}`
+                    },
                 });
-                if (!response.ok) throw new Error('Failed to fetch shared expenses'); // Handle error
+
+                if (!response.ok) throw new Error('Failed to fetch shared expenses');
 
                 const sharedExpenses = await response.json();
                 const tableBody = document.getElementById('sharedExpenseTableBody');
-                tableBody.innerHTML = ''; // Clear the table
+                tableBody.innerHTML = '';
 
                 sharedExpenses.forEach(expense => {
-                    const perParticipant = (expense.amount / expense.participants.length).toFixed(2);
                     const row = `
                         <tr>
-                            <td>${expense.name}</td>
-                            <td>₱ ${expense.amount.toFixed(2)}</td>
+                            <td>${expense.description}</td>
+                            <td>₱${expense.amount.toFixed(2)}</td>
+                            <td>${new Date(expense.date).toLocaleDateString()}</td>
                             <td>${expense.participants.join(', ')}</td>
-                            <td>₱ ${perParticipant}</td>
                         </tr>
                     `;
-                    tableBody.innerHTML += row; // Add new row to table
+                    tableBody.innerHTML += row;
                 });
             } catch (error) {
-                alert('Error fetching shared expenses: ' + error.message); // Alert on error
+                console.error('Error fetching shared expenses:', error);
             }
         }
 
         // Handle form submission for adding shared expenses
-        document.getElementById('addSharedExpenseForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission behavior
+        document.getElementById('sharedExpenseForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-            const name = document.getElementById('expenseName').value;
-            const amount = parseFloat(document.getElementById('totalAmount').value);
-            const participants = document.getElementById('participants').value.split(',').map(p => p.trim());
+            const description = document.getElementById('description').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('date').value;
+            const participants = document.getElementById('participants').value.split(',');
 
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json', // Set JSON content type
-                        'Authorization': `Bearer ${token}` // Attach authorization token
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
                     },
-                    body: JSON.stringify({ name, amount, participants }) // Send shared expense data
+                    body: JSON.stringify({ description, amount, date, participants }),
                 });
-                if (!response.ok) throw new Error('Failed to add shared expense'); // Handle error
 
-                alert('Shared expense added successfully!'); // Alert success
-                fetchSharedExpenses(); // Refresh the shared expense table
-                document.getElementById('addSharedExpenseForm').reset(); // Reset the form
+                if (response.ok) {
+                    fetchSharedExpenses();
+                    document.getElementById('sharedExpenseForm').reset();
+                } else {
+                    throw new Error('Failed to add shared expense');
+                }
             } catch (error) {
-                alert('Error adding shared expense: ' + error.message); // Alert on error
+                console.error('Error adding shared expense:', error);
             }
         });
 
         // Fetch shared expenses on page load
         window.onload = fetchSharedExpenses;
     </script>
+    
 </body>
 </html>
