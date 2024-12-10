@@ -1,5 +1,5 @@
-# **XPENDITURE: A Web-Based Money Tracker and Budgeting System
-**
+# XPENDITURE: A Web-Based Money Tracker and Budgeting System
+
 
 ## **Overview**
 XPENDITURE is a web-based system designed to help users efficiently manage personal and shared expenses. With features like budget tracking, transaction management, and shared expense handling, XPENDITURE aims to simplify financial planning and promote transparency among users sharing expenses.
