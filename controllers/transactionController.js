@@ -1,7 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Transaction = require('../models/Transaction');
 const Budget = require('../models/Budget');
-const { calculateRemainingBudget } = require('./budgetController');
 
 // @desc Add a new transaction
 // @route POST /api/transactions
@@ -23,6 +22,7 @@ const addTransaction = asyncHandler(async (req, res) => {
         type,
     });
 
+    // Update remaining budget if it's an expense
     if (type === 'expense') {
         const activeBudget = await Budget.findOne({
             user: req.user.id,
@@ -31,8 +31,15 @@ const addTransaction = asyncHandler(async (req, res) => {
         });
 
         if (activeBudget) {
-            const remaining = await calculateRemainingBudget(req.user.id, activeBudget);
-            activeBudget.remaining = remaining; // Update remaining budget
+            const expenses = await Transaction.find({
+                user: req.user.id,
+                type: 'expense',
+                date: { $gte: activeBudget.startDate, $lte: activeBudget.endDate },
+            });
+
+            const totalSpent = expenses.reduce((acc, expense) => acc + expense.amount, 0);
+            activeBudget.remaining = activeBudget.amount - totalSpent;
+
             await activeBudget.save();
         }
     }
@@ -48,4 +55,7 @@ const getTransactions = asyncHandler(async (req, res) => {
     res.status(200).json(transactions);
 });
 
-module.exports = { addTransaction, getTransactions };
+module.exports = {
+    addTransaction,
+    getTransactions,
+};
