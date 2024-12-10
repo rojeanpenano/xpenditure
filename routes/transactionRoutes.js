@@ -1,12 +1,13 @@
 const express = require('express');
-const router = express.Router();
 const { addTransaction, getTransactions } = require('../controllers/transactionController');
-const { protect } = require('../middleware/authMiddleware'); // Protect routes with authentication
+const protect = require('../middleware/authMiddleware');
 
-// Route to fetch all transactions for a user
-router.get('/', protect, getTransactions);
+const router = express.Router();
 
-// Route to add a new transaction
-router.post('/', protect, addTransaction);
+// Debug imported functions
+console.log({ addTransaction, getTransactions });
+
+// Routes for transactions
+router.route('/').get(protect, getTransactions).post(protect, addTransaction);
 
 module.exports = router;
