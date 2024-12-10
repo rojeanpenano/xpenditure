@@ -64,7 +64,7 @@
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
-            text-align: left;
+            text-align: center;
         }
 
         th {
@@ -117,6 +117,7 @@
         <thead>
             <tr>
                 <th>Amount (₱)</th>
+                <th>Remaining (₱)</th>
                 <th>Start Date</th>
                 <th>End Date</th>
             </tr>
@@ -126,7 +127,7 @@
         </tbody>
     </table>
 
-    <!-- Budget Form -->
+    <!-- Form for adding budgets -->
     <form id="budgetForm">
         <h3>Set Budget</h3>
         <label for="amount">Amount</label>
@@ -143,7 +144,7 @@
 
     <script>
         const API_URL = 'https://xpenditure-1krq.onrender.com/api/budgets';
-        const token = localStorage.getItem('token'); // Retrieve JWT token
+        const token = localStorage.getItem('token');
 
         // Fetch and display budgets
         async function fetchBudgets() {
@@ -157,16 +158,22 @@
                 const tableBody = document.getElementById('budgetTableBody');
                 tableBody.innerHTML = '';
 
-                budgets.forEach((budget) => {
+                for (const budget of budgets) {
+                    const remainingResponse = await fetch(`${API_URL}/${budget._id}/remaining`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    const { remaining } = await remainingResponse.json();
+
                     const row = `
                         <tr>
-                            <td>₱${budget.amount}</td>
+                            <td>₱${budget.amount.toFixed(2)}</td>
+                            <td>₱${remaining.toFixed(2)}</td>
                             <td>${new Date(budget.startDate).toLocaleDateString()}</td>
                             <td>${new Date(budget.endDate).toLocaleDateString()}</td>
                         </tr>
                     `;
                     tableBody.innerHTML += row;
-                });
+                }
             } catch (error) {
                 alert('Error fetching budgets: ' + error.message);
             }

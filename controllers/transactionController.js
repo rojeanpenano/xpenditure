@@ -1,8 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const Transaction = require('../models/Transaction');
 const Budget = require('../models/Budget');
+const { calculateRemainingBudget } = require('./budgetController');
 
-// Add a new transaction
+// @desc Add a new transaction
+// @route POST /api/transactions
+// @access Private
 const addTransaction = asyncHandler(async (req, res) => {
     const { date, description, category, amount, type } = req.body;
 
@@ -20,7 +23,6 @@ const addTransaction = asyncHandler(async (req, res) => {
         type,
     });
 
-    // Update remaining budget if it's an expense
     if (type === 'expense') {
         const activeBudget = await Budget.findOne({
             user: req.user.id,
@@ -29,15 +31,8 @@ const addTransaction = asyncHandler(async (req, res) => {
         });
 
         if (activeBudget) {
-            const expenses = await Transaction.find({
-                user: req.user.id,
-                type: 'expense',
-                date: { $gte: activeBudget.startDate, $lte: activeBudget.endDate },
-            });
-
-            const totalSpent = expenses.reduce((acc, expense) => acc + expense.amount, 0);
-            activeBudget.remaining = activeBudget.amount - totalSpent;
-
+            const remaining = await calculateRemainingBudget(req.user.id, activeBudget);
+            activeBudget.remaining = remaining; // Update remaining budget
             await activeBudget.save();
         }
     }
@@ -45,13 +40,12 @@ const addTransaction = asyncHandler(async (req, res) => {
     res.status(201).json(transaction);
 });
 
-// Get all transactions
+// @desc Get all transactions
+// @route GET /api/transactions
+// @access Private
 const getTransactions = asyncHandler(async (req, res) => {
     const transactions = await Transaction.find({ user: req.user.id }).sort({ date: -1 });
     res.status(200).json(transactions);
 });
 
-module.exports = {
-    addTransaction,
-    getTransactions,
-};
+module.exports = { addTransaction, getTransactions };

@@ -161,65 +161,40 @@
         <button type="submit">Add Transaction</button>
     </form>
 
-
     <script>
-        const TRANSACTION_API_URL = 'https://xpenditure-1krq.onrender.com/api/transactions';
-        const BUDGET_API_URL = 'https://xpenditure-1krq.onrender.com/api/budgets';
-        const token = localStorage.getItem('token');
-
         async function fetchBudgets() {
             try {
-                const response = await fetch(BUDGET_API_URL, {
+                const response = await fetch('https://xpenditure-1krq.onrender.com/api/budgets', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-
                 const budgets = await response.json();
+    
                 if (budgets.length > 0) {
-                    const budget = budgets[0];
-                    document.getElementById('setBudget').textContent = `Set Budget: ₱${budget.amount}`;
-                    document.getElementById('remainingBalance').textContent = `Remaining Balance: ₱${budget.remaining}`;
+                    const activeBudget = budgets[0];
+                    const remainingResponse = await fetch(
+                        `https://xpenditure-1krq.onrender.com/api/budgets/${activeBudget._id}/remaining`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                    const { remaining } = await remainingResponse.json();
+    
+                    document.getElementById('setBudget').textContent = `Set Budget: ₱${activeBudget.amount}`;
+                    document.getElementById('remainingBalance').textContent = `Remaining Balance: ₱${remaining}`;
                 }
             } catch (error) {
                 console.error('Error fetching budgets:', error);
             }
         }
-
-        async function fetchTransactions() {
-            try {
-                const response = await fetch(TRANSACTION_API_URL, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                const transactions = await response.json();
-                const tableBody = document.getElementById('transactionTableBody');
-                tableBody.innerHTML = '';
-
-                transactions.forEach((transaction) => {
-                    const row = `
-                        <tr>
-                            <td>${new Date(transaction.date).toLocaleDateString()}</td>
-                            <td>${transaction.description}</td>
-                            <td>${transaction.amount}</td>
-                            <td>${transaction.type}</td>
-                        </tr>
-                    `;
-                    tableBody.innerHTML += row;
-                });
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
-        }
-
+    
         document.getElementById('transactionForm').addEventListener('submit', async (event) => {
             event.preventDefault();
-
+    
             const date = document.getElementById('date').value;
             const description = document.getElementById('description').value;
             const amount = parseFloat(document.getElementById('amount').value);
             const type = document.getElementById('type').value;
-
+    
             try {
-                const response = await fetch(TRANSACTION_API_URL, {
+                const response = await fetch('https://xpenditure-1krq.onrender.com/api/transactions', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -227,7 +202,7 @@
                     },
                     body: JSON.stringify({ date, description, amount, type }),
                 });
-
+    
                 if (response.ok) {
                     fetchBudgets();
                     fetchTransactions();
@@ -239,11 +214,12 @@
                 console.error('Error adding transaction:', error);
             }
         });
-
+    
         window.onload = function () {
             fetchBudgets();
             fetchTransactions();
         };
     </script>
+    
 </body>
 </html>

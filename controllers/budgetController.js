@@ -10,6 +10,33 @@ const getBudgets = asyncHandler(async (req, res) => {
     res.status(200).json(budgets);
 });
 
+// @desc Calculate remaining budget dynamically
+const calculateRemainingBudget = async (userId, budget) => {
+    const expenses = await Transaction.find({
+        user: userId,
+        type: 'expense',
+        date: { $gte: budget.startDate, $lte: budget.endDate },
+    });
+
+    const totalSpent = expenses.reduce((acc, expense) => acc + expense.amount, 0);
+    return budget.amount - totalSpent; // Remaining amount
+};
+
+// @desc Get remaining budget for a budget
+// @route GET /api/budgets/:id/remaining
+// @access Private
+const getRemainingBudget = asyncHandler(async (req, res) => {
+    const budget = await Budget.findById(req.params.id);
+
+    if (!budget) {
+        res.status(404);
+        throw new Error('Budget not found');
+    }
+
+    const remaining = await calculateRemainingBudget(req.user.id, budget);
+    res.status(200).json({ remaining });
+});
+
 // @desc Add a new budget
 // @route POST /api/budgets
 // @access Private
@@ -31,29 +58,4 @@ const setBudget = asyncHandler(async (req, res) => {
     res.status(201).json(budget);
 });
 
-// @desc Calculate remaining budget
-// @route GET /api/budgets/:id/remaining
-// @access Private
-const getRemainingBudget = asyncHandler(async (req, res) => {
-    const budget = await Budget.findById(req.params.id);
-
-    if (!budget) {
-        res.status(404);
-        throw new Error('Budget not found');
-    }
-
-    // Fetch all expenses for the user within the budget's date range
-    const expenses = await Transaction.find({
-        user: req.user.id,
-        type: 'expense',
-        date: { $gte: budget.startDate, $lte: budget.endDate },
-    });
-
-    // Calculate the remaining amount
-    const totalSpent = expenses.reduce((acc, expense) => acc + expense.amount, 0);
-    const remaining = budget.amount - totalSpent;
-
-    res.status(200).json({ remaining });
-});
-
-module.exports = { getBudgets, setBudget, getRemainingBudget };
+module.exports = { getBudgets, setBudget, getRemainingBudget, calculateRemainingBudget };
