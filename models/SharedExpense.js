@@ -5,7 +5,7 @@ const sharedExpenseSchema = mongoose.Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User', // Reference the user who added the expense
+            ref: 'User',
         },
         name: {
             type: String,
@@ -16,12 +16,20 @@ const sharedExpenseSchema = mongoose.Schema(
             required: [true, 'Please add the total amount'],
         },
         participants: {
-            type: [String], // List of participants as an array of names
+            type: [String],
             required: [true, 'Please add participants'],
+        },
+        date: {
+            type: Date, // Ensure type is Date
+            required: [true, 'Please add the expense date'],
+        },
+        perParticipant: {
+            type: Number,
+            default: 0,
         },
     },
     {
-        timestamps: true, // Automatically add createdAt and updatedAt fields
+        timestamps: true,
     }
 );
 

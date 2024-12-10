@@ -15,31 +15,32 @@ const getSharedExpenses = asyncHandler(async (req, res) => {
 const addSharedExpense = asyncHandler(async (req, res) => {
     const { name, amount, participants, date } = req.body;
 
-    console.log('Request Body:', req.body); // Debugging request payload
-
     if (!name || !amount || !participants || participants.length === 0 || !date) {
         res.status(400);
         throw new Error('Please provide all required fields');
     }
 
-    try {
-        const perParticipant = (amount / participants.length).toFixed(2);
-
-        const expense = await SharedExpense.create({
-            user: req.user.id,
-            name,
-            amount,
-            participants,
-            date,
-            perParticipant,
-        });
-
-        res.status(201).json(expense);
-    } catch (error) {
-        console.error('Error saving shared expense:', error.message); // Debugging server-side errors
-        res.status(500);
-        throw new Error('Failed to save shared expense');
+    // Parse and validate the date
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+        res.status(400);
+        throw new Error('Invalid date format');
     }
+
+    // Calculate the per participant share
+    const perParticipant = (amount / participants.length).toFixed(2);
+
+    // Create the shared expense
+    const expense = await SharedExpense.create({
+        user: req.user.id,
+        name,
+        amount,
+        participants,
+        date: parsedDate, // Save the valid Date object
+        perParticipant,
+    });
+
+    res.status(201).json(expense);
 });
 
 module.exports = { getSharedExpenses, addSharedExpense };

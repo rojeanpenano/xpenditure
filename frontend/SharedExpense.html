@@ -145,21 +145,24 @@
                         'Authorization': `Bearer ${token}`
                     }
                 });
+
                 if (!response.ok) throw new Error('Failed to fetch shared expenses');
 
                 const sharedExpenses = await response.json();
                 const tableBody = document.getElementById('sharedExpenseTableBody');
-                tableBody.innerHTML = '';
+                tableBody.innerHTML = ''; // Clear the table
 
                 sharedExpenses.forEach(expense => {
                     const perParticipant = (expense.amount / expense.participants.length).toFixed(2);
+                    const formattedDate = expense.date ? new Date(expense.date).toLocaleDateString() : 'No Date';
+
                     const row = `
                         <tr>
                             <td>${expense.name}</td>
                             <td>${expense.amount}</td>
                             <td>${expense.participants.join(', ')}</td>
                             <td>${perParticipant}</td>
-                            <td>${new Date(expense.date).toLocaleDateString()}</td>
+                            <td>${formattedDate}</td>
                         </tr>`;
                     tableBody.innerHTML += row;
                 });
@@ -168,39 +171,39 @@
             }
         }
 
-        document.getElementById('addExpenseForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
 
-            const name = document.getElementById('expenseName').value;
-            const amount = parseFloat(document.getElementById('expenseAmount').value);
-            const participants = document.getElementById('expenseParticipants').value.split(',').map(p => p.trim());
-            const date = document.getElementById('expenseDate').value;
+    document.getElementById('addExpenseForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
 
-            const payload = { name, amount, participants, date };
+        const name = document.getElementById('expenseName').value;
+        const amount = parseFloat(document.getElementById('expenseAmount').value);
+        const participants = document.getElementById('expenseParticipants').value.split(',').map(p => p.trim());
+        const date = document.getElementById('expenseDate').value;
 
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify(payload)
-                });
+        const payload = { name, amount, participants, date };
 
-                if (!response.ok) {
-                    const errorResponse = await response.json();
-                    console.error('Error response from server:', errorResponse);
-                    throw new Error('Failed to add shared expense');
-                }
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(payload)
+            });
 
-                fetchSharedExpenses();
-                alert('Shared expense added successfully!');
-                document.getElementById('addExpenseForm').reset();
-            } catch (error) {
-                console.error('Error adding shared expense:', error.message);
+            if (!response.ok) {
+                const errorResponse = await response.json();
+                console.error('Error response from server:', errorResponse);
+                throw new Error('Failed to add shared expense');
             }
-        });
+
+            fetchSharedExpenses(); // Fetch updated expenses list
+            document.getElementById('addExpenseForm').reset(); // Clear the form
+        } catch (error) {
+            console.error('Error adding shared expense:', error.message);
+        }
+    });
 
         fetchSharedExpenses();
     </script>
