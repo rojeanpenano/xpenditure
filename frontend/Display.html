@@ -201,6 +201,7 @@
 
                 if (response.ok) {
                     fetchTransactions();
+                    alert('Transaction added successfully!');
                     document.getElementById('transactionForm').reset();
                 } else {
                     throw new Error('Failed to add transaction');
