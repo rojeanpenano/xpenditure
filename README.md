@@ -101,8 +101,8 @@ xpenditure-backend/
 Create a `.env` file in the root directory:
 ```bash
 PORT=5000
-MONGO_URI=<your_mongo_db_connection_string>
-JWT_SECRET=<your_secret_key>
+MONGO_URI=mongodb+srv://admin:AI-deLasalle2024@xpenditure.doky3.mongodb.net/
+JWT_SECRET="f7b069c3fe6c945d24a2c8db0021bf98dc6c7891824c95ecf38f4b25717082bf56159d12c8ee6e0efda84c41086656b2cc81b4038633d7f7008b844d01c48464"
 ```
 
 ### **3. Running the Application**
@@ -121,12 +121,6 @@ JWT_SECRET=<your_secret_key>
 4. **Shared Expense Management**: Split group expenses fairly.
 
 ---
-
-## **Future Enhancements**
-- **Expense Analytics**: Insights into spending patterns.
-- **Mobile App**: Enhance accessibility on mobile devices.
-- **Notifications**: Alerts for budget limits or pending shared expenses.
-
 ## **Security Highlights**
 - Secure data transactions with JWT.
 - Enforce role-based access for APIs.
